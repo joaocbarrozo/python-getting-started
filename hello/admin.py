@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from almoxarifado.models import Produto, Fornecedor, ProdutoPedido, Pedido, Categoria, Setor, LocalPrateleira, Entrada, Saida
+from hello.models import Produto, Fornecedor, ProdutoPedido, Pedido, Categoria, Setor, LocalPrateleira, Entrada, Saida
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
