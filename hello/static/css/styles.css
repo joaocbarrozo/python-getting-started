@@ -1,0 +1,7 @@
+td, thead {
+    text-align: center;
+  }
+
+#formFiltro {
+  display: none;
+}

@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+  <h1>Pedidos</h1>
+ <!-- Painel superior de controles -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-3 text-white p-3">
+        <!-- Botão para adicionar novo produto -->
+        <button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#addPedidoModal">
+          Novo Pedido
+        </button>
+        <!-- Botão para exibir/esconder filtros -->
+        <button type="button" class="btn btn-primary mt-1" id="botaoFiltros" onClick="esconderFiltro()">
+          Filtros
+        </button>
+      </div>
+      <div class="col-9 text-dark p-3">
+        <!-- Filtro -->
+        <form class="form-control" id="formFiltro">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">  
+                <label for="id" class="form-label">Número:</label>
+                <input type="text" name="id" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">    
+                <label for="fornecedor" class="form-label">Fornecedor:</label>
+                <input type="text" name="fornecedor" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group"> 
+                <label for="status" class="form-label">Status:</label>
+                <input type="select" name="status" class="form-control">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="data_inicial" class="form-label">Data Inicial:</label>
+                <input type="date" name="data_inicial" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="data_final" class="form-label">Data Final:</label>
+                <input type="date" name="data_final" class="form-control">
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-sm mt-1 " type="submit">Filtrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para adicionar um produto -->
+  <div class="modal fade" id="addPedidoModal" tabindex="-1" aria-labelledby="addPedidoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addPedidoModalLabel">Novo Pedido</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="form-control" method="post" action="{% url 'pedidos' %}">
+            {% csrf_token %}
+            {{ form }}
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Salvar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script para aplicar autocapitalize -->
+  <script>
+    // Obtém o formulário do modal
+    const modalFormulario = document.querySelector('#addPedidoModal form');
+  
+    // Obtém todos os campos de texto do formulário
+    const camposTexto = modalFormulario.querySelectorAll('input[type="text"], textarea');
+  
+    // Adiciona evento de escuta para o evento de digitação em cada campo
+    camposTexto.forEach(function(campo) {
+      campo.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+      });
+    });
+  </script>
+  
+  <!-- Mensagem de sucesso ao adicionar um pedido -->
+  {% if messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endif %}
+  
+  <!-- Tabela de dados dos produtos -->
+  <div class="table-responsive">
+    <table class="table table-hover table-striped table-bordered ">
+      <thead class="table-primary">
+        <tr>
+          <th>Número</th>
+          <th>Fornecedor</th>
+          <th>Status</th>
+          <th>Data</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pedido in pedidos %}
+          <tr>
+            <td>{{ pedido.id }}</td>
+            <td>{{ pedido.fornecedor }}</td>
+            <td>{{ pedido.status }}</td>
+            <td>{{ pedido.criado_em|date:"d/m/Y" }}</td>
+            <td>
+              <a href="{% url 'detalhes_pedido' pedido_id=pedido.id %}" class="btn btn-primary btn-sm">Detalhes</a>
+              <a href="{% url 'editar_pedido' pedido_id=pedido.id %}" class="btn btn-primary btn-sm">Editar</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <br>
+{% endblock %}
+

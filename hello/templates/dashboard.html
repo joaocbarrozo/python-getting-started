@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Resumo do Estoque</h1>
+    <p>Total de produtos: {{produtos_total}} sem entrada: {{ sem_entrada_registrada }}</p>
+    <p>Valor Total em Estoque: R$ {{ valor_total_estoque }}</p>
+    <p>Produtos Abaixo do Estoque Mínimo: {{ produtos_abaixo_minimo }}</p>
+
+    <h2>Relatórios</h2>
+    <a href="{% url 'home' %}" class="btn btn-primary">Estoque Atual</a>
+    <a href="{% url 'abaixo_est_min' %}" class="btn btn-primary">Estoque Mínimo</a>
+    <a href="{% url 'relatorio_consumo' %}" class="btn btn-primary">Consumo</a>
+    </div>
+
+{% endblock %}

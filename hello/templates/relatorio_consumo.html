@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Relatório de Consumo</h1>
+  <div class="col-3">
+  <button type="button" class="btn mb-3 btn-secondary remover_print" onclick="imprimir()">Imprimir</button>
+  </div>
+  <!-- Formulário de filtro -->
+<div class="col-9 text-dark p-3">
+    <!-- Filtros -->
+    <form method="get" class="form-control">
+        <div class="row">
+            <div class="col-md-6">
+            <div class="form-group">
+                {{ form.data_inicial.label_tag }}
+                {{ form.data_inicial }}
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="form-group">
+                {{ form.data_final.label_tag }}
+                {{ form.data_final }}
+            </div>
+            </div>
+        </div>
+        <button class="btn btn-primary btn-sm mt-1 remover_print" type="submit">Filtrar</button>
+    </form>
+</div>
+
+  <!-- Tabela de dados do relatório -->
+  <div class="table-responsive">
+    <table class="table table-hover table-striped table-bordered">
+      <thead class="table-primary">
+        <tr>
+          <th>Produto</th>
+          <th>Descricao</th>
+          <th>Quantidade Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for saida in saidas %}
+          <tr>
+            <td>{{ saida.produto__nome }}</td>
+            <td>{{ saida.produto__descricao }}</td>
+            <td>{{ saida.quantidade_total }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// Função para imprimir o pedido
+function imprimir() {
+   window.print(); // Aciona a função de impressão do navegador
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+
+<h1>Detalhes do Pedido</h1>
+
+<form method="post" action="#">
+    {% csrf_token %}
+    <div class="row remover_print">
+        <div class="mb-3 col-6">
+            <label for="id" class="form-label">ID:</label>
+            <input type="text" id="id" class="form-control" value="{{ pedido.id }}" readonly>
+        </div>
+        <div class="mb-3 col-6">
+            <label for="status" class="form-label ">Status:</label>
+            <input type="text" id="status" class="form-control" value="{{ pedido.status }}" readonly>
+        </div>
+    </div>
+    <div class="row">
+        <div class="mb-3 col-6">
+            <label for="fornecedor" class="form-label">Fornecedor:</label>
+            <input type="text" id="fornecedor" class="form-control" value="{{ pedido.fornecedor }}" readonly>
+        </div>
+        <div class="mb-3 col-6">
+            <label for="criado_em" class="form-label">Data de Criação:</label>
+            <input type="text" id="criado_em" class="form-control" value="{{ pedido.criado_em }}" readonly>
+        </div>
+    </div>
+</form>
+
+<h2>Produtos do Pedido</h2>
+<div class="table-responsive">
+    <table class="table table-hover table-striped table-bordered">
+        <thead class="table-primary">
+            <tr>
+                <th>Nome do Produto</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th class="remover_print">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos_pedidos %}
+            <tr>
+                <td>{{ produto.produto.nome }}</td>
+                <td>{{ produto.produto.descricao }}</td>
+                <td>{{ produto.quantidade }}</td>
+                <td class="remover_print">
+                    <form method="post"
+                        action="{% url 'remover_produto_pedido' pedido_id=pedido.id produto_pedido_id=produto.id %}"
+                        class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm remover-produto-button"
+                            data-produto-id="{{ produto.id }}" data-pedido-id="{{ pedido.id }}">Remover</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Nenhum produto encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Botão para abrir o modal -->
+<button type="button" class="btn btn-primary remover_print" data-bs-toggle="modal" data-bs-target="#modalAdicionarProduto">
+    Adicionar Produto
+</button>
+<!-- Botão para imprimir o pedido -->
+<button type="button" class="btn btn-secondary remover_print" onclick="imprimirPedido()">Imprimir Pedido</button>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalAdicionarProduto" tabindex="-1" aria-labelledby="modalAdicionarProdutoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAdicionarProdutoLabel">Adicionar Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="form-control"
+                    action="{% url 'add_produto_pedido' pedido_id=pedido.id %}"
+                    method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <button type="submit" class="mt2 btn btn-primary">Salvar</button>
+                    <button type="button" class="mt2 btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Código JavaScript/jQuery -->
+<script>
+    $(document).ready(function () {
+        // Manipula o evento de clique no botão "Remover"
+        $('.remover-produto-button').click(function (event) {
+            event.preventDefault(); // Impede o envio do formulário
+
+            var produtoId = $(this).data('produto-id');
+            var pedidoId = $(this).data('pedido-id');
+
+            // Solicita a confirmação do usuário
+            if (confirm("Tem certeza de que deseja excluir este produto do pedido?")) {
+                // Redireciona para a URL de remoção do produto
+                var url = `/pedido/${pedidoId}/produto/${produtoId}/remover/`;
+                window.location.href = url;
+            }
+        });
+    });
+
+    // Função para imprimir o pedido
+    function imprimirPedido() {
+       window.print(); // Aciona a função de impressão do navegador
+    }
+</script>
+
+{% endblock %}

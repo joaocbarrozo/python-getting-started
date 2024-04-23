@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+  <h1>Entradas</h1>
+ <!-- Painel superior de controles -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-3 text-white p-3">
+        <!-- Botão para exibir/esconder filtros -->
+        <button type="button" class="btn btn-primary mt-1" id="botaoFiltros" onClick="esconderFiltro()">
+          Filtros
+        </button>
+      </div>
+
+      <div class="col-9 text-dark p-3">
+        <!-- Filtro -->
+        <form class="form-control" id="formFiltro">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="produto" class="form-label">Produto:</label>
+                <input type="text" name="produto" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="tipo" class="form-label">Tipo:</label>
+                <input type="text" name="tipo" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="fornecedor" class="form-label">Fornecedor:</label>
+                <input type="text" name="fornecedor" class="form-control">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="data_inicial" class="form-label">Data Inicial:</label>
+                <input type="date" name="data_inicial" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="data_final" class="form-label">Data Final:</label>
+                <input type="date" name="data_final" class="form-control">
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-sm mt-1 " type="submit">Filtrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para adicionar um produto -->
+  <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProductModalLabel">Novo Produto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="form-control" method="post" action="{% url 'produtos' %}">
+            {% csrf_token %}
+            {{ form }}
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Salvar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Mensagem de sucesso ao adicionar uma entrada-->
+  {% if messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endif %}
+  
+
+<!-- Tabela de dados das entradas -->
+<div class="table-responsive">
+  <table id="entrada-table" class="table table-hover table-striped table-bordered ">
+    <thead class="table-primary">
+      <tr>
+        <th>
+          Produto <br>
+          <button class="btn btn-sort" data-field="produto">▲▼</button>
+        </th>
+        <th>
+          Tipo <br>
+          <button class="btn btn-sort" data-field="tipo">▲▼</button>
+        </th>
+        <th>
+          Fornecedor <br>
+          <button class="btn btn-sort" data-field="fornecedor">▲▼</button>
+        </th>
+        <th>
+          Quantidade <br>
+          <button class="btn btn-sort" data-field="quantidade">▲▼</button>
+        </th>
+        <th>
+          Preço Unitário <br>
+          <button class="btn btn-sort" data-field="preco_unitario">▲▼</button>
+        </th>
+        <th>
+          Data <br>
+          <button class="btn btn-sort" data-field="data">▲▼</button>
+        </th>
+      </tr>
+    </thead>
+      <tbody>
+        {% for entrada in entradas %}
+          <tr>
+            <td>{{ entrada.produto }}</td>
+            <td>{{ entrada.tipo }}</td>
+            <td>{{ entrada.fornecedor }}</td>
+            <td>{{ entrada.quantidade }}</td>
+            <td>{{ entrada.preco_unitario }}</td>
+            <td>{{ entrada.criado_em|date:"d/m/Y" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <br>
+  <script>
+    $(document).ready(function() {
+      // Função para ordenar a tabela com base na coluna clicada
+      function sortTable(column, order) {
+        var rows = $('#entrada-table tbody tr').get();
+  
+        rows.sort(function(a, b) {
+          var keyA = $(a).find('td:eq(' + column + ')').text();
+          var keyB = $(b).find('td:eq(' + column + ')').text();
+  
+          if (order === 'asc') {
+            return keyA.localeCompare(keyB);
+          } else {
+            return keyB.localeCompare(keyA);
+          }
+        });
+  
+        $.each(rows, function(index, row) {
+          $('#entrada-table tbody').append(row);
+        });
+      }
+  
+      // Manipula o clique nos botões de ordenação
+      $('.btn-sort').click(function() {
+        var column = $(this).data('field');
+        var order = $(this).hasClass('sorted-asc') ? 'desc' : 'asc';
+  
+        // Remove a classe de ordenação dos outros botões e atualiza o botão atual
+        $('.btn-sort').removeClass('sorted-asc sorted-desc');
+        $(this).addClass('sorted-' + order);
+  
+        // Chama a função de ordenação
+        sortTable($(this).closest('th').index(), order);
+      });
+    });
+  </script>
+  
+{% endblock %}
+

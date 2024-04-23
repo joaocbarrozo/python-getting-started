@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Abaixo Estoque Mínimo</h1>
+  <!-- Botão para imprimir o pedido -->
+<button type="button" class="btn mb-3 btn-secondary remover_print" onclick="imprimir()">Imprimir</button>
+
+  <div class="table-responsive">
+    <table class="table table-hover table-striped table-bordered ">
+      <thead class="table-primary">
+        <tr>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Categoria</th>
+          <th>Local</th>
+          <th>Est. Minimo</th>
+          <th>Est. Atual</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for produto in produtos %}
+          <tr>
+            <td>{{ produto.nome }}</td>
+            <td>{{ produto.descricao }}</td>
+            <td>{{ produto.categoria }}</td>
+            <td>{{ produto.local }}</td>
+            <td>{{ produto.estoque_minimo }}</td>
+            <td>{{ produto.quantidade }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <script>
+    // Função para imprimir o pedido
+    function imprimir() {
+       window.print(); // Aciona a função de impressão do navegador
+    }
+  </script>
+  
+{% endblock %}

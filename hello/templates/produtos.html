@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+  <h1>Produtos</h1>
+ <!-- Painel superior de controles -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-3 text-white p-3">
+        <!-- Botão para adicionar novo produto -->
+        <button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#addProductModal">
+          Novo Produto
+        </button>
+        <!-- Botão para exibir/esconder filtros -->
+        <button type="button" class="btn btn-primary mt-1" id="botaoFiltros" onClick="esconderFiltro()">
+          Filtros
+        </button>
+      </div>
+      <div class="col-9 text-dark p-3">
+        <!-- Filtro -->
+        <form class="form-control" id="formFiltro">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">  
+                <label for="nome" class="form-label">Nome:</label>
+                <input type="text" name="nome" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">    
+                <label for="categoria" class="form-label">Categoria:</label>
+                <input type="select" name="categoria" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group"> 
+                <label for="nome" class="form-label">Local:</label>
+                <input type="text" name="local" class="form-control">
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm mt-1 " type="submit">Filtrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para adicionar um produto -->
+  <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProductModalLabel">Novo Produto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="form-control" method="post" action="{% url 'produtos' %}">
+            {% csrf_token %}
+            {{ form }}
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Salvar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script para aplicar autocapitalize -->
+  <script>
+    // Obtém o formulário do modal
+    const modalFormulario = document.querySelector('#addProductModal form');
+  
+    // Obtém todos os campos de texto do formulário
+    const camposTexto = modalFormulario.querySelectorAll('input[type="text"], textarea');
+  
+    // Adiciona evento de escuta para o evento de digitação em cada campo
+    camposTexto.forEach(function(campo) {
+      campo.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+      });
+    });
+  </script>
+  
+  <!-- Mensagem de sucesso ao adicionar um produto -->
+  {% if messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endif %}
+  
+  <!-- Tabela de dados dos produtos -->
+  <div class="table-responsive">
+    <table class="table table-hover table-striped table-bordered ">
+      <thead class="table-primary">
+        <tr>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Categoria</th>
+          <th>Local</th>
+          <th>Est. Minimo</th>
+          <th>Est. Atual</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for produto in produtos %}
+          <tr>
+            <td>{{ produto.nome }}</td>
+            <td>{{ produto.descricao }}</td>
+            <td>{{ produto.categoria }}</td>
+            <td>{{ produto.local }}</td>
+            <td>{{ produto.estoque_minimo }}</td>
+            <td>{{ produto.quantidade }}</td>
+            <td>
+              <a href="{% url 'add_entrada' %}?produto_id={{ produto.id }}&user_id={{ request.user.id }}" class="btn btn-primary btn-sm">+</a>
+              <a href="{% url 'add_saida' %}?produto_id={{ produto.id }}&user_id={{ request.user.id }}" class="btn btn-primary btn-sm">-</a>
+              <a href="{% url 'editar_produto' produto_id=produto.id %}" class="btn btn-primary btn-sm">Editar</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <br>
+{% endblock %}
+

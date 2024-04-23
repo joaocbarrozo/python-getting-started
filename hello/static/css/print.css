@@ -1,0 +1,41 @@
+/* print.css */
+
+/* Ocultar elementos não essenciais */
+
+/* Ocultar a coluna de ações na versão impressa */
+@media print {
+    .remover_print {
+        display: none;
+    }
+    #modalAdicionarProduto {
+        display: none;
+    }
+    h1 {
+        font-size: 20pt;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    th, td {
+        padding: 8px;
+        border: 1px solid #ddd;
+    }
+    
+    /* Definir estilo de fonte adequado para impressão */
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 12pt;
+    }
+}
+
+/* Ajustar a formatação */
+
+
+
+
+/* ... adicione mais estilos personalizados conforme necessário ... */
