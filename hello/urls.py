@@ -18,7 +18,7 @@ from .views import abaixo_est_min_view, add_produto_pedido_view, dashboard_view,
 
 urlpatterns = [
     path('', login_view, name='login'),
-    path('login/', login_view, name='login'),
+    #path('login/', login_view, name='login'),
     path('accounts/login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('home/', home_view, name='home'),
