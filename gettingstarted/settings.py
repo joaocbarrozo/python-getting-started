@@ -156,6 +156,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Configuração do mecanismo de sessão
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use o banco de dados para armazenar as sessões
+
+# Configurações de cookie de sessão
+SESSION_COOKIE_AGE = 3600  # Tempo de expiração do cookie de sessão em segundos (aqui: 1 hora)
+SESSION_COOKIE_SECURE = True  # Apenas envie cookies de sessão em conexões HTTPS
+SESSION_COOKIE_HTTPONLY = True  # Proteja os cookies de sessão contra ataques de script entre sites
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
