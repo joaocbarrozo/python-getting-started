@@ -106,18 +106,18 @@ def produtos_view(request):
     else:
         form = ProdutoForm()
     
-    produtos = Produto.objects.all().order_by("nome")
-    #Filtra os produtos por nome, categoria e local
-    nome = request.GET.get('nome')
-    categoria = request.GET.get('categoria')
-    local = request.GET.get('local')
-        
-    if nome:
-        produtos = produtos.filter(nome__icontains=nome)
-    if categoria:
-        produtos = produtos.filter(categoria__categoriaNome__icontains=categoria)
-    if local:
-        produtos = produtos.filter(local__localNome__icontains=local)        
+        produtos = Produto.objects.all().order_by("nome")
+        #Filtra os produtos por nome, categoria e local
+        nome = request.GET.get('nome')
+        categoria = request.GET.get('categoria')
+        local = request.GET.get('local')
+            
+        if nome:
+            produtos = produtos.filter(nome__icontains=nome)
+        if categoria:
+            produtos = produtos.filter(categoria__categoriaNome__icontains=categoria)
+        if local:
+            produtos = produtos.filter(local__localNome__icontains=local)        
     
     return render(request, 'produtos.html', {'produtos': produtos, 'form': form })
 
@@ -308,7 +308,7 @@ def detalhes_pedido_view(request, pedido_id):
     else:
         form = ProdutoPedidoForm()
 
-    todos_produtos = Produto.objects.all()  # Obtenha todos os produtos disponíveis
+        todos_produtos = Produto.objects.all()  # Obtenha todos os produtos disponíveis
 
     return render(request, 'detalhes_pedido.html', {'form': form, 'pedido': pedido, 'produtos_pedidos': produtos_pedidos, 'todos_produtos': todos_produtos})
 
