@@ -236,25 +236,25 @@ def pedidos_view(request):
     else:
         form = PedidoForm()
     
-    pedidos = Pedido.objects.all().order_by("-criado_em")
-    #Filtra os produtos por nome, categoria e local
-    id = request.GET.get('id')
-    fornecedor = request.GET.get('fornecedor')
-    status = request.GET.get('status')
-    data_inicial = request.GET.get('data_inicial')
-    data_final = request.GET.get('data_final')
+        pedidos = Pedido.objects.all().order_by("-criado_em")
+        #Filtra os produtos por nome, categoria e local
+        id = request.GET.get('id')
+        fornecedor = request.GET.get('fornecedor')
+        status = request.GET.get('status')
+        data_inicial = request.GET.get('data_inicial')
+        data_final = request.GET.get('data_final')
 
-    if data_inicial:
-        data_inicial = datetime.strptime(data_inicial, '%Y-%m-%d').date()
-    if data_final:
-        data_final = datetime.strptime(data_final, '%Y-%m-%d').date()
-    
-    if id:
-        pedidos = pedidos.filter(id__icontains=id)
-    if fornecedor:
-        pedidos = pedidos.filter(fornecedor__nome__icontains=fornecedor)
-    if status:
-        pedidos = pedidos.filter(status__icontains=status)        
+        if data_inicial:
+            data_inicial = datetime.strptime(data_inicial, '%Y-%m-%d').date()
+        if data_final:
+            data_final = datetime.strptime(data_final, '%Y-%m-%d').date()
+        
+        if id:
+            pedidos = pedidos.filter(id__icontains=id)
+        if fornecedor:
+            pedidos = pedidos.filter(fornecedor__nome__icontains=fornecedor)
+        if status:
+            pedidos = pedidos.filter(status__icontains=status)        
         
     return render(request, 'pedidos.html', {'pedidos': pedidos, 'form': form})
 
