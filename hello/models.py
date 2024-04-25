@@ -60,7 +60,7 @@ class Saida(models.Model):
     setor = models.ForeignKey(Setor, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField()
     criado_em = models.DateTimeField(auto_now_add=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    #usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.produto.nome
@@ -102,7 +102,7 @@ class Compra(models.Model):
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
     criado_em = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20,choices=STATUS)
-    solicitante = models.ForeignKey(User, on_delete=models.CASCADE) 
+    #solicitante = models.ForeignKey(User, on_delete=models.CASCADE) 
 
 
 
