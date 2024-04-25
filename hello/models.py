@@ -45,7 +45,7 @@ class Entrada(models.Model):
     quantidade = models.PositiveIntegerField()
     preco_unitario = models.DecimalField(max_digits=6, decimal_places=2)
     criado_em = models.DateTimeField(auto_now_add=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    #usuario = models.ForeignKey(User.username, on_delete=models.CASCADE)
  
     def __str__(self):
         return self.produto.nome
