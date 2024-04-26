@@ -185,37 +185,32 @@ def processar_xml(xml_file):
     # Ler o conteúdo do arquivo XML
     xml_content = xml_file.read().decode('utf-8')
 
-    # Analisar o arquivo XML e extrair os dados
-    print("Processando arquivo ...")
+    # Analisar o conteúdo XML
     try:
         tree = ET.fromstring(xml_content)
+        # Iterar sobre cada elemento 'det' para extrair as informações dos itens
+        for det in tree.findall('.//{http://www.portalfiscal.inf.br/nfe}det'):
+            # Extrair as informações de cada item
+            cProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text
+            xProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text
+            uCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}uCom').text
+            qCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text
+            vUnCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text
+            vProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text
+            # Aqui você pode fazer o que for necessário com os dados
+            print("Produto:", cProd)
+            print("Descrição:", xProd)
+            print("Unidade:", uCom)
+            print("Quantidade:", qCom)
+            print("Valor Unitário:", vUnCom)
+            print("Valor Total:", vProd)
+            print("--------------------")
+            # Por exemplo, você pode salvar essas informações no banco de dados
+            # Produto.objects.create(nome=cProd, descricao=xProd)
     except ET.ParseError as e:
         print("Erro ao analisar o XML:", e)
         return
-    
-    tree = ET.parse(xml_file)
-    root = tree.getroot()
-    print("Root: " + root.tag)
-    # Iterar sobre cada elemento 'det' para extrair as informações dos itens
-    for det in root.findall('.//{http://www.portalfiscal.inf.br/nfe}det'):
-        # Extrair as informações de cada item
-        cProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text
-        xProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text
-        uCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}uCom').text
-        qCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text
-        vUnCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text
-        vProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text
-        
-        # Aqui você pode salvar essas informações no banco de dados, imprimir, ou fazer o que for necessário
-        print("Produto:", cProd)
-        print("Descrição:", xProd)
-        print("Unidade:", uCom)
-        print("Quantidade:", qCom)
-        print("Valor Unitário:", vUnCom)
-        print("Valor Total:", vProd)
-        print("--------------------")
-        # Salvar os dados no banco de dados
-        Produto.objects.create(nome=cProd, descricao=xProd)
+
 
 @login_required    
 def add_entrada_view(request):
