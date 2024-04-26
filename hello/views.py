@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import FiltroDataForm, FornecedorForm, ProdutoForm, PedidoForm, ProdutoPedidoForm, EntradasForm, SaidasForm
+from .forms import FiltroDataForm, FornecedorForm, ProdutoForm, PedidoForm, ProdutoPedidoForm, EntradasForm, SaidasForm, UploadXMLForm
 from django.db.models import Q
 from datetime import datetime
 from django.db.models import Sum, F, Q, Subquery, OuterRef, ExpressionWrapper, FloatField
@@ -135,29 +135,87 @@ def add_product(request):
 @login_required
 def entradas_view(request):
     entradas = Entrada.objects.all().order_by("produto__nome")
+    if request.method == 'POST':
+        form = UploadXMLForm(request.POST, request.FILES)
+        if form.is_valid():
+            xml_file = request.FILES['xml_file']
+            print('Arquivo recebido!')
+            # Processar o arquivo XML e salvar os dados no banco de dados
+            processar_xml(xml_file)
+            return redirect('produtos')
+        print(form.is_valid())
+    else:
+        form = UploadXMLForm()
+        
 
-    # Filtra entradas
-    produto = request.GET.get('produto')
-    tipo = request.GET.get('tipo')
-    fornecedor = request.GET.get('fornecedor')
-    data_inicial = request.GET.get('data_inicial')
-    data_final = request.GET.get('data_final')
+        # Filtra entradas
+        produto = request.GET.get('produto')
+        tipo = request.GET.get('tipo')
+        fornecedor = request.GET.get('fornecedor')
+        data_inicial = request.GET.get('data_inicial')
+        data_final = request.GET.get('data_final')
 
-    if data_inicial:
-        data_inicial = datetime.strptime(data_inicial, '%Y-%m-%d').date()
-    if data_final:
-        data_final = datetime.strptime(data_final, '%Y-%m-%d').date()
+        if data_inicial:
+            data_inicial = datetime.strptime(data_inicial, '%Y-%m-%d').date()
+        if data_final:
+            data_final = datetime.strptime(data_final, '%Y-%m-%d').date()
 
-    if produto:
-        entradas = entradas.filter(Q(produto__nome__icontains=produto))
-    if tipo:
-        entradas = entradas.filter(Q(tipo__icontains=tipo))
-    if fornecedor:
-        entradas = entradas.filter(Q(fornecedor__nome__icontains=fornecedor))
-    if data_inicial and data_final:
-        entradas = entradas.filter(criado_em__range=[data_inicial, data_final])
+        if produto:
+            entradas = entradas.filter(Q(produto__nome__icontains=produto))
+        if tipo:
+            entradas = entradas.filter(Q(tipo__icontains=tipo))
+        if fornecedor:
+            entradas = entradas.filter(Q(fornecedor__nome__icontains=fornecedor))
+        if data_inicial and data_final:
+            entradas = entradas.filter(criado_em__range=[data_inicial, data_final])
+        
+    return render(request, 'entradas.html', {'entradas': entradas, 'form':form})
+
+def processar_xml(xml_file):
+    # Analisar o arquivo XML e extrair os dados
+    # Aqui você usaria uma biblioteca como xml.etree.ElementTree ou lxml
+    # Exemplo simplificado usando xml.etree.ElementTree:
+    print("Processando arquivo ...")
+    import xml.etree.ElementTree as ET
+    # Verificar se o arquivo XML está vazio
+    if not xml_file:
+        print("O arquivo XML está vazio.")
+        return
+
+    # Ler o conteúdo do arquivo XML
+    xml_content = xml_file.read().decode('utf-8')
+
+    # Analisar o arquivo XML e extrair os dados
+    print("Processando arquivo ...")
+    try:
+        tree = ET.fromstring(xml_content)
+    except ET.ParseError as e:
+        print("Erro ao analisar o XML:", e)
+        return
     
-    return render(request, 'entradas.html', {'entradas': entradas})
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    print("Root: " + root.tag)
+    # Iterar sobre cada elemento 'det' para extrair as informações dos itens
+    for det in root.findall('.//{http://www.portalfiscal.inf.br/nfe}det'):
+        # Extrair as informações de cada item
+        cProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text
+        xProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text
+        uCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}uCom').text
+        qCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text
+        vUnCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text
+        vProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text
+        
+        # Aqui você pode salvar essas informações no banco de dados, imprimir, ou fazer o que for necessário
+        print("Produto:", cProd)
+        print("Descrição:", xProd)
+        print("Unidade:", uCom)
+        print("Quantidade:", qCom)
+        print("Valor Unitário:", vUnCom)
+        print("Valor Total:", vProd)
+        print("--------------------")
+        # Salvar os dados no banco de dados
+        Produto.objects.create(nome=cProd, descricao=xProd)
 
 @login_required    
 def add_entrada_view(request):

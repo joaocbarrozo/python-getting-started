@@ -80,3 +80,6 @@ class FornecedorForm(forms.ModelForm):
 class FiltroDataForm(forms.Form):
     data_inicial = forms.DateField(label='Data Inicial', widget=forms.DateInput(attrs={'type': 'date'}))
     data_final = forms.DateField(label='Data Final', widget=forms.DateInput(attrs={'type': 'date'}))
+
+class UploadXMLForm(forms.Form):
+    xml_file = forms.FileField()
