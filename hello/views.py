@@ -215,7 +215,7 @@ def add_saida_view(request):
             else:
                 form.save()
                 messages.success(request, 'Saída salva com sucesso!')
-                return redirect('saidas')
+                return redirect('produtos')
         # If the form is invalid, render the form with errors
     else:
         produto_id = request.GET.get('produto_id')
