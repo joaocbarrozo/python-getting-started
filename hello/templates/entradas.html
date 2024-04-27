@@ -11,13 +11,7 @@
         <button type="button" class="btn btn-primary mt-1" id="botaoFiltros" onClick="esconderFiltro()">
           Filtros
         </button>
-        <form class="for-control" method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button class="btn btn-primary btn-sm mb-1 " type="submit">Importar</button>
-        </form>
-      </div>
-
+      
       <div class="col-9 text-dark p-3">
         <!-- Filtro -->
         <form class="form-control" id="formFiltro">
@@ -60,6 +54,14 @@
           <button class="btn btn-primary btn-sm mt-1 " type="submit">Filtrar</button>
         </form>
       </div>
+    </div>
+     <!-- Form para adicionar um arquivo XML -->
+    <div> 
+      <form class="form-control" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary btn-sm mb-1" type="submit">Importar</button>
+    </form>  
     </div>
   </div>
 
@@ -142,6 +144,18 @@
     </table>
   </div>
   <br>
+
+  <script>
+    function updateFileName(input) {
+        var fileNameElement = document.getElementById('fileName');
+        if (input.files.length > 0) {
+            fileNameElement.textContent = 'Arquivo selecionado: ' + input.files[0].name;
+        } else {
+            fileNameElement.textContent = '';
+        }
+    }
+</script>
+
   <script>
     $(document).ready(function() {
       // Função para ordenar a tabela com base na coluna clicada
