@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import Fornecedor, Produto, Pedido, ProdutoPedido, Entrada, Saida
 from django.contrib.auth import logout
@@ -188,28 +189,32 @@ def processar_xml(xml_file):
     # Analisar o conteúdo XML
     try:
         tree = ET.fromstring(xml_content)
+        itens = [] #Lista para armazenar os itens
         # Iterar sobre cada elemento 'det' para extrair as informações dos itens
         for det in tree.findall('.//{http://www.portalfiscal.inf.br/nfe}det'):
             # Extrair as informações de cada item
-            cProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text
-            xProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text
-            uCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}uCom').text
-            qCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text
-            vUnCom = det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text
-            vProd = det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text
+            item = {
+            "cProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text,
+            "xProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text,
+            "uCom" : det.find('.//{http://www.portalfiscal.inf.br/nfe}uCom').text,
+            "qCom" : det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text,
+            "vUnCom" : det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text,
+            "vProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text
+            }
+            itens.append(item)
             # Aqui você pode fazer o que for necessário com os dados
-            print("Produto:", cProd)
-            print("Descrição:", xProd)
-            print("Unidade:", uCom)
-            print("Quantidade:", qCom)
-            print("Valor Unitário:", vUnCom)
-            print("Valor Total:", vProd)
+            print("Produto:", item)
+            #print("Descrição:", xProd)
+            #print("Unidade:", uCom)
+            #print("Quantidade:", qCom)
+            #print("Valor Unitário:", vUnCom)
+            #print("Valor Total:", vProd)
             print("--------------------")
             # Por exemplo, você pode salvar essas informações no banco de dados
             # Produto.objects.create(nome=cProd, descricao=xProd)
     except ET.ParseError as e:
         print("Erro ao analisar o XML:", e)
-        return
+    return itens 
 
 
 @login_required    
@@ -219,17 +224,35 @@ def add_entrada_view(request):
         if form.is_valid():          
             form.save()
             messages.success(request, 'Entrada salva com sucesso!')
-            return redirect('entradas')
+            return redirect('produtos')
         else:
             form = EntradasForm()        
             # Redirecione para outra página ou retorne uma resposta de sucesso
-            return redirect('product')
+            return redirect('produtos')
     else:
         produto_id = request.GET.get('produto_id')
         user_id = request.GET.get('user_id')
         initial_data = {'produto': produto_id, 'usuario': user_id}
         form = EntradasForm(initial=initial_data)
     return render(request, 'add_entrada.html', {'form': form})  
+
+@login_required
+def itensImportados_view(request):
+    itens = []
+    if request.method == 'POST':
+        form = UploadXMLForm(request.POST, request.FILES)
+        if form.is_valid():
+            xml_file = request.FILES['xml_file']
+            print('Arquivo recebido!')
+            # Processar o arquivo XML e salvar os dados no banco de dados
+            itens = processar_xml(xml_file)
+            
+        print(form.is_valid())
+    else:
+        form = UploadXMLForm()
+    
+    return render(request, 'itensImportados.html', {'itens': itens, 'form': form})
+
 
 @login_required    
 def saidas_view(request):

@@ -125,40 +125,41 @@
   <br>
 
   <script>
+  // Função para ordenar a tabela com base na coluna clicada
     $(document).ready(function() {
-      // Função para ordenar a tabela com base na coluna clicada
+      
       function sortTable(column, order) {
         var rows = $('#saida-table tbody tr').get();
-  
+    
         rows.sort(function(a, b) {
           var keyA = $(a).find('td:eq(' + column + ')').text();
           var keyB = $(b).find('td:eq(' + column + ')').text();
-  
+    
           if (order === 'asc') {
             return keyA.localeCompare(keyB);
           } else {
             return keyB.localeCompare(keyA);
           }
         });
-  
+    
         $.each(rows, function(index, row) {
           $('#saida-table tbody').append(row);
         });
       }
-  
+    
       // Manipula o clique nos botões de ordenação
       $('.btn-sort').click(function() {
         var column = $(this).data('field');
         var order = $(this).hasClass('sorted-asc') ? 'desc' : 'asc';
-  
+    
         // Remove a classe de ordenação dos outros botões e atualiza o botão atual
         $('.btn-sort').removeClass('sorted-asc sorted-desc');
         $(this).addClass('sorted-' + order);
-  
+    
         // Chama a função de ordenação
         sortTable($(this).closest('th').index(), order);
       });
     });
-  </script>
+    </script>
   
 {% endblock %}

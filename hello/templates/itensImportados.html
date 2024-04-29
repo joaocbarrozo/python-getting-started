@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Produtos importados</h1>
+  <!-- Botão para imprimir o pedido -->
+<button type="button" class="btn mb-3 btn-secondary remover_print" onclick="imprimir()">Imprimir</button>
+<div> 
+  <form class="form-control" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary btn-sm mb-1" type="submit">Importar</button>
+</form> 
+</div>
+
+  <div class="table-responsive">
+    <table class="table table-hover table-striped table-bordered ">
+      <thead class="table-primary">
+        <tr>
+          <th>Cod</th>
+          <th>Descrição</th>
+          <th>Unidade</th>
+          <th>Qtd</th>
+          <th>Valor Un</th>
+          <th>Valor total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in itens %}
+          <tr>
+            <td>{{ item.cProd }}</td>
+            <td>{{ item.xProd }}</td>
+            <td>{{ item.uCom }}</td>
+            <td>{{ item.qCom }}</td>
+            <td>{{ item.vUnCom }}</td>
+            <td>{{ item.vProd }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <script>
+    // Função para imprimir o pedido
+    function imprimir() {
+       window.print(); // Aciona a função de impressão do navegador
+    }
+  </script>
+  
+{% endblock %}

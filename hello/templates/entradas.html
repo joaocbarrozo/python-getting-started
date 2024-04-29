@@ -10,7 +10,8 @@
         <!-- Botão para exibir/esconder filtros -->
         <button type="button" class="btn btn-primary mt-1" id="botaoFiltros" onClick="esconderFiltro()">
           Filtros
-        </button>
+        </button> 
+          <a href="{% url 'itens_importados' %}" class="btn btn-primary mt-1">Importar</a>
       
       <div class="col-9 text-dark p-3">
         <!-- Filtro -->
@@ -55,14 +56,8 @@
         </form>
       </div>
     </div>
-     <!-- Form para adicionar um arquivo XML -->
-    <div> 
-      <form class="form-control" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary btn-sm mb-1" type="submit">Importar</button>
-    </form>  
-    </div>
+     <!-- Botão para acessar a tela de importação de xml -->
+   
   </div>
 
   <!-- Modal para adicionar um produto -->
@@ -145,48 +140,38 @@
   </div>
   <br>
 
-  <script>
-    function updateFileName(input) {
-        var fileNameElement = document.getElementById('fileName');
-        if (input.files.length > 0) {
-            fileNameElement.textContent = 'Arquivo selecionado: ' + input.files[0].name;
-        } else {
-            fileNameElement.textContent = '';
-        }
-    }
-</script>
-
-  <script>
+  <script> 
+  // Função para ordenar a tabela com base na coluna clicada
     $(document).ready(function() {
       // Função para ordenar a tabela com base na coluna clicada
       function sortTable(column, order) {
         var rows = $('#entrada-table tbody tr').get();
-  
+    
         rows.sort(function(a, b) {
           var keyA = $(a).find('td:eq(' + column + ')').text();
           var keyB = $(b).find('td:eq(' + column + ')').text();
-  
+    
           if (order === 'asc') {
             return keyA.localeCompare(keyB);
           } else {
             return keyB.localeCompare(keyA);
           }
         });
-  
+    
         $.each(rows, function(index, row) {
           $('#entrada-table tbody').append(row);
         });
       }
-  
+    
       // Manipula o clique nos botões de ordenação
       $('.btn-sort').click(function() {
         var column = $(this).data('field');
         var order = $(this).hasClass('sorted-asc') ? 'desc' : 'asc';
-  
+    
         // Remove a classe de ordenação dos outros botões e atualiza o botão atual
         $('.btn-sort').removeClass('sorted-asc sorted-desc');
         $(this).addClass('sorted-' + order);
-  
+    
         // Chama a função de ordenação
         sortTable($(this).closest('th').index(), order);
       });
