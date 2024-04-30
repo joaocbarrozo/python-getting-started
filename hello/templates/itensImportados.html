@@ -7,10 +7,54 @@
 <div> 
   <form class="form-control" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ formXML.as_p }}
     <button class="btn btn-primary btn-sm mb-1" type="submit">Importar</button>
 </form> 
 </div>
+
+  <!-- Modal para adicionar uma entrada -->
+  <div class="modal fade" id="addEntradaModal" tabindex="-1" aria-labelledby="addEntradaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addEntradaModalLabel">Adicionar Entrada</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="form-control" method="post" action="{% url 'add_entrada' %}">
+            {% csrf_token %}
+            {{ formEntradas }}
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Salvar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal para adicionar um produto -->
+    <div class="modal fade" id="addProdutoModal" tabindex="-1" aria-labelledby="addProdutoModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addProdutoModalLabel">Adicionar Produto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="form-control" method="post" action="{% url 'produtos' %}">
+              {% csrf_token %}
+              {{ formProduto }}
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
   <div class="table-responsive">
     <table class="table table-hover table-striped table-bordered ">
@@ -22,6 +66,7 @@
           <th>Qtd</th>
           <th>Valor Un</th>
           <th>Valor total</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -33,6 +78,8 @@
             <td>{{ item.qCom }}</td>
             <td>{{ item.vUnCom }}</td>
             <td>{{ item.vProd }}</td>
+            <td><button type="button" class="btn-add btn btn-primary btn-sm mb-1">Add</button>
+              <button type="button" class="btn-criar btn btn-primary btn-sm mb-1">Criar</button></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -43,6 +90,42 @@
     function imprimir() {
        window.print(); // Aciona a função de impressão do navegador
     }
+  </script>
+  <!-- JavaScript para preencher o formulário com os dados do produto -->
+<script>
+  $(document).ready(function(){
+    $('.btn-add').click(function(){
+      // Obter os dados do produto da linha da tabela
+      var row = $(this).closest('tr');
+      var quantity = row.find('td:eq(3)').text(); // Índice 3 é a coluna de quantidade
+      var unitPrice = row.find('td:eq(4)').text(); // Índice 4 é a coluna de preço unitário
+      
+      // Preencher o formulário do modal com os dados do produto
+      $('#id_quantidade').val(quantity);
+      $('#id_preco_unitario').val(unitPrice);
+      
+      // Mostrar o modal
+      $('#addEntradaModal').modal('show');
+    });
+  });
+  </script>
+
+<script>
+  $(document).ready(function(){
+    $('.btn-criar').click(function(){
+      // Obter os dados do produto da linha da tabela
+      var row = $(this).closest('tr');
+      var quantity = row.find('td:eq(3)').text(); // Índice 3 é a coluna de quantidade
+      var descricao = row.find('td:eq(1)').text(); // Índice 4 é a coluna de preço unitário
+      
+      // Preencher o formulário do modal com os dados do produto
+     
+      $('#id_descricao').val(descricao);
+      
+      // Mostrar o modal
+      $('#addProdutoModal').modal('show');
+    });
+  });
   </script>
   
 {% endblock %}

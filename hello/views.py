@@ -190,6 +190,8 @@ def processar_xml(xml_file):
     try:
         tree = ET.fromstring(xml_content)
         itens = [] #Lista para armazenar os itens
+        
+
         # Iterar sobre cada elemento 'det' para extrair as informações dos itens
         for det in tree.findall('.//{http://www.portalfiscal.inf.br/nfe}det'):
             # Extrair as informações de cada item
@@ -197,9 +199,9 @@ def processar_xml(xml_file):
             "cProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text,
             "xProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text,
             "uCom" : det.find('.//{http://www.portalfiscal.inf.br/nfe}uCom').text,
-            "qCom" : det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text,
-            "vUnCom" : det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text,
-            "vProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text
+            "qCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text)),
+            "vUnCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text)),
+            "vProd" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text))
             }
             itens.append(item)
             # Aqui você pode fazer o que for necessário com os dados
@@ -240,18 +242,23 @@ def add_entrada_view(request):
 def itensImportados_view(request):
     itens = []
     if request.method == 'POST':
-        form = UploadXMLForm(request.POST, request.FILES)
-        if form.is_valid():
+        formXML = UploadXMLForm(request.POST, request.FILES)
+        if formXML.is_valid():
             xml_file = request.FILES['xml_file']
             print('Arquivo recebido!')
             # Processar o arquivo XML e salvar os dados no banco de dados
             itens = processar_xml(xml_file)
             
-        print(form.is_valid())
+        print(formXML.is_valid())
     else:
-        form = UploadXMLForm()
+        formXML = UploadXMLForm()
+    formEntrada = EntradasForm()
+    formProduto = ProdutoForm()
+    context = {
+        'itens': itens, 'formXML': formXML, 'formEntradas': formEntrada, 'formProduto': formProduto
+    }
     
-    return render(request, 'itensImportados.html', {'itens': itens, 'form': form})
+    return render(request, 'itensImportados.html', context)
 
 
 @login_required    
