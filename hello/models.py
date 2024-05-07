@@ -28,16 +28,19 @@ class Produto(models.Model):
         return self.nome
 
 class Fornecedor(models.Model):
+    cnpj = models.CharField(max_length=16, unique=True)
+    razao_social = models.CharField(max_length=255)
     nome = models.CharField(max_length=255)
     fone = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
+    contato = models.CharField(max_length=64, blank=True, null=True)
     def __str__(self):
         return self.nome
 
 class Entrada(models.Model):
     TIPO = (
-        ('COMPRA', 'COMPRA'),
-        ('DOAÇÃO', 'DOAÇÃO')
+        ('C', 'COMPRA'),
+        ('D', 'DOAÇÃO')
     )
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     tipo = models.CharField(max_length=16, choices=TIPO)

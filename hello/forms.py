@@ -70,11 +70,14 @@ class ProdutoPedidoForm(forms.ModelForm):
 class FornecedorForm(forms.ModelForm):
     class Meta:
         model = Fornecedor
-        fields = ['nome', 'fone', 'email']
+        fields = ['cnpj','razao_social','nome', 'fone', 'email', 'contato']
         widgets = {
+            'cnpj': forms.TextInput(attrs={'class': 'form-control'}),
+            'razao_social': forms.TextInput(attrs={'class': 'form-control'}),
             'nome': forms.TextInput(attrs={'class': 'form-control'}),
             'fone': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'contato': forms.TextInput(attrs={'class': 'form-control'}),
         }
     
 class FiltroDataForm(forms.Form):
