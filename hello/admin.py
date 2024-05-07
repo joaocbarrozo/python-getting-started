@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from hello.models import Produto, Fornecedor, ProdutoPedido, Pedido, Categoria, Setor, LocalPrateleira, Entrada, Saida
+from hello.models import Produto, Fornecedor, ProdutoPedido, Pedido, Categoria, Setor, LocalPrateleira, Entrada, Saida, Compra, ItemNF
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
@@ -35,6 +35,14 @@ class EntradaAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(Saida)
+class SaidaAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Compra)
+class SaidaAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(ItemNF)
 class SaidaAdmin(admin.ModelAdmin):
     pass
 # Register your models here.

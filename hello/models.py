@@ -19,8 +19,8 @@ class LocalPrateleira(models.Model):
 class Produto(models.Model):
     nome = models.CharField(max_length=255)
     descricao = models.TextField()
-    quantidade = models.PositiveIntegerField()
-    estoque_minimo = models.PositiveIntegerField()
+    quantidade = models.PositiveIntegerField(default=0)
+    estoque_minimo = models.PositiveIntegerField(default=0)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, default="")
     local = models.ForeignKey(LocalPrateleira, on_delete=models.CASCADE, default="")
     
@@ -34,6 +34,12 @@ class Fornecedor(models.Model):
     fone = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     contato = models.CharField(max_length=64, blank=True, null=True)
+    estado = models.CharField(max_length=4, blank=True, null=True)
+    municipio = models.CharField(max_length=32, blank=True, null=True)
+    bairro = models.CharField(max_length=32, blank=True, null=True)
+    endereco = models.CharField(max_length=128, blank=True, null=True)
+    numero = models.CharField(max_length=8, blank=True, null=True)
+    cep = models.CharField(max_length=16, blank=True, null=True)
     def __str__(self):
         return self.nome
 
@@ -93,19 +99,24 @@ class ProdutoPedido(models.Model):
     quantidade = models.PositiveBigIntegerField()
 
 
-class Compra(models.Model):
+
+class Compra(models.Model):#Dados extraidos via XML dos dados das NF-es
     STATUS = (
-        ('Recebida', 'recebida'),
-        ('Não-Recebida', 'não-recebida'),
-        ('Cancelada', 'cancelada')
+        ('E', 'Entregue'),
+        ('A', 'Aguardando'),
+        ('C', 'Cancelada')
     )    
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    quantidade = models.PositiveBigIntegerField()
+    numero_id = models.CharField(max_length=64, unique=True)#Identificador da NF-e de 44 digitos
+    numero = models.CharField(max_length=16)#Numero da NF-e
+    data_emissao = models.DateTimeField()
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
     criado_em = models.DateTimeField(auto_now_add=True)
+    recebida_em = models.DateTimeField()
     status = models.CharField(max_length=20,choices=STATUS)
     #solicitante = models.ForeignKey(User, on_delete=models.CASCADE) 
+
+class ItemNF(models.Model):#Dados extraidos via XML
+    codigo = models.CharField(max_length=32)#Codigo que consta no xml
 
 
 

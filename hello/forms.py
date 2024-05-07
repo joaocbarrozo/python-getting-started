@@ -70,7 +70,8 @@ class ProdutoPedidoForm(forms.ModelForm):
 class FornecedorForm(forms.ModelForm):
     class Meta:
         model = Fornecedor
-        fields = ['cnpj','razao_social','nome', 'fone', 'email', 'contato']
+        fields = ['cnpj','razao_social','nome', 'fone', 'email', 'contato',
+                  'estado', 'municipio', 'bairro', 'endereco', 'numero', 'cep']
         widgets = {
             'cnpj': forms.TextInput(attrs={'class': 'form-control'}),
             'razao_social': forms.TextInput(attrs={'class': 'form-control'}),
