@@ -1,6 +1,6 @@
 from urllib import request
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import Fornecedor, Produto, Pedido, ProdutoPedido, Entrada, Saida
+from .models import Compra, Fornecedor, Produto, Pedido, ProdutoPedido, Entrada, Saida
 from django.contrib.auth import logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
@@ -237,6 +237,43 @@ def add_entrada_view(request):
         initial_data = {'produto': produto_id, 'usuario': user_id}
         form = EntradasForm(initial=initial_data)
     return render(request, 'add_entrada.html', {'form': form})  
+
+@login_required
+def compras_view(request):
+    compras = Compra.objects.all().order_by("data_emissao")
+    if request.method == 'POST':
+        form = UploadXMLForm(request.POST, request.FILES)
+        if form.is_valid():
+            xml_file = request.FILES['xml_file']
+            print('Arquivo recebido!')
+            # Processar o arquivo XML e salvar os dados no banco de dados
+            processar_xml(xml_file)
+            return redirect('produtos')
+        print(form.is_valid())
+    else:
+        form = UploadXMLForm()
+        
+
+        # Filtra entradas
+        numero = request.GET.get('numero')
+        fornecedor = request.GET.get('fornecedor')
+        
+        data_inicial = request.GET.get('data_inicial')
+        data_final = request.GET.get('data_final')
+
+        if data_inicial:
+            data_inicial = datetime.strptime(data_inicial, '%Y-%m-%d').date()
+        if data_final:
+            data_final = datetime.strptime(data_final, '%Y-%m-%d').date()
+
+        if numero:
+            compras = compras.filter(Q(produto__nome__icontains=numero))
+        if fornecedor:
+            compras = compras.filter(Q(fornecedor__nome__icontains=fornecedor))
+        if data_inicial and data_final:
+            compras = compras.filter(criado_em__range=[data_inicial, data_final])
+        
+    return render(request, 'compras.html', {'compras': compras, 'form':form})
 
 @login_required
 def itensImportados_view(request):
