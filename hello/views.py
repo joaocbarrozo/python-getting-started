@@ -172,52 +172,6 @@ def entradas_view(request):
         
     return render(request, 'entradas.html', {'entradas': entradas, 'form':form})
 
-def processar_xml(xml_file):
-    # Analisar o arquivo XML e extrair os dados
-    # Aqui você usaria uma biblioteca como xml.etree.ElementTree ou lxml
-    # Exemplo simplificado usando xml.etree.ElementTree:
-    print("Processando arquivo ...")
-    import xml.etree.ElementTree as ET
-    # Verificar se o arquivo XML está vazio
-    if not xml_file:
-        print("O arquivo XML está vazio.")
-        return
-
-    # Ler o conteúdo do arquivo XML
-    xml_content = xml_file.read().decode('utf-8')
-
-    # Analisar o conteúdo XML
-    try:
-        tree = ET.fromstring(xml_content)
-        itens = [] #Lista para armazenar os itens
-        
-
-        # Iterar sobre cada elemento 'det' para extrair as informações dos itens
-        for det in tree.findall('.//{http://www.portalfiscal.inf.br/nfe}det'):
-            # Extrair as informações de cada item
-            item = {
-            "cProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text,
-            "xProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text,
-            "uCom" : det.find('.//{http://www.portalfiscal.inf.br/nfe}uCom').text,
-            "qCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text)),
-            "vUnCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text)),
-            "vProd" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text))
-            }
-            itens.append(item)
-            # Aqui você pode fazer o que for necessário com os dados
-            print("Produto:", item)
-            #print("Descrição:", xProd)
-            #print("Unidade:", uCom)
-            #print("Quantidade:", qCom)
-            #print("Valor Unitário:", vUnCom)
-            #print("Valor Total:", vProd)
-            print("--------------------")
-            # Por exemplo, você pode salvar essas informações no banco de dados
-            # Produto.objects.create(nome=cProd, descricao=xProd)
-    except ET.ParseError as e:
-        print("Erro ao analisar o XML:", e)
-    return itens 
-
 
 @login_required    
 def add_entrada_view(request):
@@ -239,7 +193,7 @@ def add_entrada_view(request):
     return render(request, 'add_entrada.html', {'form': form})  
 
 @login_required
-def compras_view(request):
+def compras_view(request):#Exibe notas fiscais importadas e ou cadastradas
     compras = Compra.objects.all().order_by("data_emissao")
     if request.method == 'POST':
         form = UploadXMLForm(request.POST, request.FILES)
@@ -296,6 +250,52 @@ def itensImportados_view(request):
     }
     
     return render(request, 'itensImportados.html', context)
+
+def processar_xml(xml_file):
+    # Analisar o arquivo XML e extrair os dados
+    # Aqui você usaria uma biblioteca como xml.etree.ElementTree ou lxml
+    # Exemplo simplificado usando xml.etree.ElementTree:
+    print("Processando arquivo ...")
+    import xml.etree.ElementTree as ET
+    # Verificar se o arquivo XML está vazio
+    if not xml_file:
+        print("O arquivo XML está vazio.")
+        return
+
+    # Ler o conteúdo do arquivo XML
+    xml_content = xml_file.read().decode('utf-8')
+
+    # Analisar o conteúdo XML
+    try:
+        tree = ET.fromstring(xml_content)
+        itens = [] #Lista para armazenar os itens
+        
+
+        # Iterar sobre cada elemento 'det' para extrair as informações dos itens
+        for det in tree.findall('.//{http://www.portalfiscal.inf.br/nfe}det'):
+            # Extrair as informações de cada item
+            item = {
+            "cProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text,
+            "xProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text,
+            "uCom" : det.find('.//{http://www.portalfiscal.inf.br/nfe}uCom').text,
+            "qCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text)),
+            "vUnCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text)),
+            "vProd" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text))
+            }
+            itens.append(item)
+            # Aqui você pode fazer o que for necessário com os dados
+            print("Produto:", item)
+            #print("Descrição:", xProd)
+            #print("Unidade:", uCom)
+            #print("Quantidade:", qCom)
+            #print("Valor Unitário:", vUnCom)
+            #print("Valor Total:", vProd)
+            print("--------------------")
+            # Por exemplo, você pode salvar essas informações no banco de dados
+            # Produto.objects.create(nome=cProd, descricao=xProd)
+    except ET.ParseError as e:
+        print("Erro ao analisar o XML:", e)
+    return itens 
 
 
 @login_required    

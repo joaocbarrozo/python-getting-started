@@ -117,6 +117,13 @@ class Compra(models.Model):#Dados extraidos via XML dos dados das NF-es
 
 class ItemNF(models.Model):#Dados extraidos via XML
     codigo = models.CharField(max_length=32)#Codigo que consta no xml
+    descricao = models.CharField(max_length=255)
+    unidade = models.CharField(max_length=8)
+    quantidade = models.CharField(max_length=32)
+    preco_unitario = models.CharField(max_length=32)
+    valot_total = models.CharField(max_length=32)
+    entrada = models.CharField(max_length=2)
+    data_importacao = models.DateTimeField(auto_now=True)
 
 
 
