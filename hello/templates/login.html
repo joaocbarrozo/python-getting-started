@@ -43,8 +43,20 @@
     </div>
   </div>
 </div>
+{% if messages %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <script> //Script para remover a notificação após 3 segundos
+      setTimeout(function() {
+          document.querySelector('.alert').remove();
+      }, 3000); // 3000 milissegundos = 3 segundos
+  </script>
+  {% endif %}
 {% endblock %}
-
   <footer class="bg-light">
       <div class="container">
         <p class="text-center py-3">&copy;AME</p>

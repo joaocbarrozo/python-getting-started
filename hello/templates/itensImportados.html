@@ -11,6 +11,20 @@
     <button class="btn btn-primary btn-sm mb-1" type="submit">Importar</button>
 </form> 
 </div>
+ <!-- Exibição de notificações -->
+{% if messages %}
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <script> //Script para remover a notificação após 3 segundos
+      setTimeout(function() {
+          document.querySelector('.alert').remove();
+      }, 3000); // 3000 milissegundos = 3 segundos
+  </script>
+  {% endif %}
 
   <!-- Modal para adicionar uma entrada -->
   <div class="modal fade" id="addEntradaModal" tabindex="-1" aria-labelledby="addEntradaModalLabel" aria-hidden="true">

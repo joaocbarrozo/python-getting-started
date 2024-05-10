@@ -18,8 +18,11 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             return redirect('home') # replace 'dashboard' with the name of your dashboard view
+        else:
+            messages.error(request, 'Nome de usuário ou senha inválidos. Tente novamente.')
     else:
         form = AuthenticationForm()
+    
     return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
@@ -239,7 +242,10 @@ def itensImportados_view(request):
             print('Arquivo recebido!')
             # Processar o arquivo XML e salvar os dados no banco de dados
             itens = processar_xml(xml_file)
-            
+            if itens.__len__() < 1:
+                messages.error(request, "NF-e já foi importada")
+            else:
+                messages.success(request, str(itens.__len__()) + " itens importados")
         print(formXML.is_valid())
     else:
         formXML = UploadXMLForm()
@@ -269,30 +275,104 @@ def processar_xml(xml_file):
     try:
         tree = ET.fromstring(xml_content)
         itens = [] #Lista para armazenar os itens
+        fornecedor = {}
+        nf_e = {}
         
+        # Encontrar o elemento infNFe 
+        infNFe = tree.find('.//{http://www.portalfiscal.inf.br/nfe}infNFe')
 
-        # Iterar sobre cada elemento 'det' para extrair as informações dos itens
-        for det in tree.findall('.//{http://www.portalfiscal.inf.br/nfe}det'):
-            # Extrair as informações de cada item
-            item = {
-            "cProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text,
-            "xProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text,
-            "uCom" : det.find('.//{http://www.portalfiscal.inf.br/nfe}uCom').text,
-            "qCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text)),
-            "vUnCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text)),
-            "vProd" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text))
-            }
-            itens.append(item)
-            # Aqui você pode fazer o que for necessário com os dados
-            print("Produto:", item)
-            #print("Descrição:", xProd)
-            #print("Unidade:", uCom)
-            #print("Quantidade:", qCom)
-            #print("Valor Unitário:", vUnCom)
-            #print("Valor Total:", vProd)
-            print("--------------------")
-            # Por exemplo, você pode salvar essas informações no banco de dados
-            # Produto.objects.create(nome=cProd, descricao=xProd)
+        # Extrair o valor do atributo Id
+        if infNFe is not None:
+            nfe_id = infNFe.attrib.get('Id')
+            nf_e = nfe_id[3:]
+            print("ID da NF-e:", nf_e)
+        else:
+            print("Elemento infNFe não encontrado.")
+        #Se a NF-e não existir no banco de dados seguir com o processo de extração dos dados    
+        nf_exists = Compra.objects.filter(numero_id=nf_e).exists()
+        print("Wxiste NF-e? " + str(nf_exists))
+        #Verifica se a NF-e já foi importada
+        if not nf_exists:
+            # Encontrar o elemento CNPJ
+            cnpj_xml = tree.find(".//{http://www.portalfiscal.inf.br/nfe}CNPJ").text
+            print("CNPJ: " + cnpj_xml)
+            #Verificar se o cnpj já está cadastrado no banco de dados
+            cnpj_exists = Fornecedor.objects.filter(cnpj=cnpj_xml).exists()
+            print("Existe CNPJ? " + str(cnpj_exists))
+            #Verifica se o fornecedor já está cadastrado
+            if not cnpj_exists:
+                #Coletar os dados do fornecedor e armazenar em um dicionario ou objeto
+                fornecedor_data = {}
+                fornecedor_data['cnpj'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}CNPJ').text
+                fornecedor_data['fone'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}fone').text
+                fornecedor_data['xNome'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}xNome').text
+                fornecedor_data['xFant'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}xFant').text
+                fornecedor_data['xLgr'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}xLgr').text
+                fornecedor_data['nro'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}nro').text
+                fornecedor_data['xBairro'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}xBairro').text
+                fornecedor_data['xMun'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}xMun').text
+                fornecedor_data['UF'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}UF').text
+                fornecedor_data['CEP'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}CEP').text
+                print(fornecedor_data)
+                #Salvar os dados do fornecedor no banco de dados
+                dados_fornecedor = Fornecedor.objects.create(
+                cnpj = fornecedor_data['cnpj'],
+                razao_social = fornecedor_data['xNome'],
+                nome = fornecedor_data['xFant'], 
+                fone = fornecedor_data['fone'],
+                email = "",          
+                contato = "",
+                estado = fornecedor_data['UF'],
+                municipio = fornecedor_data['xMun'],
+                bairro = fornecedor_data['xBairro'],
+                endereco = fornecedor_data['xLgr'], 
+                numero = fornecedor_data['nro'],
+                cep = fornecedor_data['CEP']
+                )
+                dados_fornecedor.save()
+                #messages.success(request, "Dados do fornecedor salvo com sucesso!")
+            else:
+                print("Fornecedor já cadastrado")    
+            #Coletar dados da NF e salvar no banco de dados
+            NFe_data = {}
+            NFe_data['IdNFe'] = nf_e
+            NFe_data['nNF'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}nNF').text
+            NFe_data['dhEmi'] = tree.find('.//{http://www.portalfiscal.inf.br/nfe}dhEmi').text
+            print(NFe_data)
+            #Salvar os dados da NF-e em Compra no banco de dados
+            dados_nfe = Compra.objects.create(
+            numero_id = NFe_data['IdNFe'],
+            numero = NFe_data['nNF'],
+            data_emissao = NFe_data['dhEmi'],
+            fornecedor = Fornecedor.objects.get(cnpj=cnpj_xml), 
+            status = 'E'
+            )
+            dados_nfe.save()  
+            # Iterar sobre cada elemento 'det' para extrair as informações dos itens
+            for det in tree.findall('.//{http://www.portalfiscal.inf.br/nfe}det'):
+                # Extrair as informações de cada item
+                item = {
+                "cProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text,
+                "xProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text,
+                "uCom" : det.find('.//{http://www.portalfiscal.inf.br/nfe}uCom').text,
+                "qCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}qCom').text)),
+                "vUnCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text)),
+                "vProd" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text))
+                }
+                itens.append(item)
+                # Aqui você pode fazer o que for necessário com os dados
+                print("Produto:", item)
+                #print("Descrição:", xProd)
+                #print("Unidade:", uCom)
+                #print("Quantidade:", qCom)
+                #print("Valor Unitário:", vUnCom)
+                #print("Valor Total:", vProd)
+                print("--------------------")
+                # Por exemplo, você pode salvar essas informações no banco de dados
+                # Produto.objects.create(nome=cProd, descricao=xProd)
+        else:
+            print("NF-e já importada")
+            #messages.warning(request,"NF-e já importada!")
     except ET.ParseError as e:
         print("Erro ao analisar o XML:", e)
     return itens 

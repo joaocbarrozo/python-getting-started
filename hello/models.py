@@ -111,11 +111,12 @@ class Compra(models.Model):#Dados extraidos via XML dos dados das NF-es
     data_emissao = models.DateTimeField()
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
     criado_em = models.DateTimeField(auto_now_add=True)
-    recebida_em = models.DateTimeField()
+    recebida_em = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=20,choices=STATUS)
     #solicitante = models.ForeignKey(User, on_delete=models.CASCADE) 
 
 class ItemNF(models.Model):#Dados extraidos via XML
+    nfe = models.ForeignKey(Compra, on_delete=models.CASCADE)
     codigo = models.CharField(max_length=32)#Codigo que consta no xml
     descricao = models.CharField(max_length=255)
     unidade = models.CharField(max_length=8)

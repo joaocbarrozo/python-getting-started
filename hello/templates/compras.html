@@ -3,6 +3,19 @@
 
 {% block content %}
   <h1>Compras</h1>
+  {% if messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <script> //Script para remover a notificação após 3 segundos
+      setTimeout(function() {
+          document.querySelector('.alert').remove();
+      }, 3000); // 3000 milissegundos = 3 segundos
+  </script>
+  {% endif %}
  <!-- Painel superior de controles -->
   <div class="container-fluid">
     <div class="row">
@@ -19,7 +32,7 @@
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">
-                <label for="numero_id class="form-label">Número:</label>
+                <label for="numero_id" class="form-label">Número:</label>
                 <input type="text" name="numero" class="form-control">
               </div>
             </div>
@@ -110,12 +123,12 @@
       </tr>
     </thead>
       <tbody>
-        {% for entrada in entradas %}
+        {% for compra in compras %}
           <tr>
-            <td>{{ compras.numero_id }}</td>
-            <td>{{ compras.numero }}</td>
-            <td>{{ compras.data_emissao }}</td>
-            <td>{{ compras.fornecedor }}</td>
+            <td>{{ compra.numero_id }}</td>
+            <td>{{ compra.numero }}</td>
+            <td>{{ compra.data_emissao }}</td>
+            <td>{{ compra.fornecedor }}</td>
           </tr>
         {% endfor %}
       </tbody>
