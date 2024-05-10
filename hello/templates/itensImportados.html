@@ -74,24 +74,26 @@
     <table class="table table-hover table-striped table-bordered ">
       <thead class="table-primary">
         <tr>
-          <th>Cod</th>
+          <th>NF-e</th>
           <th>Descrição</th>
           <th>Unidade</th>
           <th>Qtd</th>
           <th>Valor Un</th>
           <th>Valor total</th>
+          <th>Data importação</th>
           <th>Ações</th>
         </tr>
       </thead>
       <tbody>
         {% for item in itens %}
           <tr>
-            <td>{{ item.cProd }}</td>
-            <td>{{ item.xProd }}</td>
-            <td>{{ item.uCom }}</td>
-            <td>{{ item.qCom }}</td>
-            <td>{{ item.vUnCom }}</td>
-            <td>{{ item.vProd }}</td>
+            <td>{{ item.nfe_id }}</td>
+            <td>{{ item.descricao }}</td>
+            <td>{{ item.unidade }}</td>
+            <td>{{ item.quantidade }}</td>
+            <td>{{ item.preco_unitario }}</td>
+            <td>{{ item.valot_total }}</td>
+            <td>{{ item.data_impoprtacao }}</td>
             <td><button type="button" class="btn-add btn btn-primary btn-sm mb-1">Add</button>
               <button type="button" class="btn-criar btn btn-primary btn-sm mb-1">Criar</button></td>
           </tr>
@@ -99,6 +101,7 @@
       </tbody>
     </table>
   </div>
+
   <script>
     // Função para imprimir o pedido
     function imprimir() {

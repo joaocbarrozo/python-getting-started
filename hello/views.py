@@ -1,6 +1,6 @@
 from urllib import request
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import Compra, Fornecedor, Produto, Pedido, ProdutoPedido, Entrada, Saida
+from .models import Compra, Fornecedor, ItemNF, Produto, Pedido, ProdutoPedido, Entrada, Saida
 from django.contrib.auth import logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
@@ -234,14 +234,14 @@ def compras_view(request):#Exibe notas fiscais importadas e ou cadastradas
 
 @login_required
 def itensImportados_view(request):
-    itens = []
+    itens = ItemNF.objects.all().order_by("data_importacao")
     if request.method == 'POST':
         formXML = UploadXMLForm(request.POST, request.FILES)
         if formXML.is_valid():
             xml_file = request.FILES['xml_file']
             print('Arquivo recebido!')
             # Processar o arquivo XML e salvar os dados no banco de dados
-            itens = processar_xml(xml_file)
+            processar_xml(xml_file)
             if itens.__len__() < 1:
                 messages.error(request, "NF-e já foi importada")
             else:
@@ -251,6 +251,7 @@ def itensImportados_view(request):
         formXML = UploadXMLForm()
     formEntrada = EntradasForm()
     formProduto = ProdutoForm()
+    itens = ItemNF.objects.all().order_by("data_importacao")
     context = {
         'itens': itens, 'formXML': formXML, 'formEntradas': formEntrada, 'formProduto': formProduto
     }
@@ -344,7 +345,8 @@ def processar_xml(xml_file):
             numero_id = NFe_data['IdNFe'],
             numero = NFe_data['nNF'],
             data_emissao = NFe_data['dhEmi'],
-            fornecedor = Fornecedor.objects.get(cnpj=cnpj_xml), 
+            fornecedor = Fornecedor.objects.get(cnpj=cnpj_xml),
+            recebida_em = "", 
             status = 'E'
             )
             dados_nfe.save()  
@@ -359,7 +361,17 @@ def processar_xml(xml_file):
                 "vUnCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text)),
                 "vProd" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text))
                 }
-                itens.append(item)
+                dados_item = ItemNF.objects.create(
+                    nfe_id = Compra.objects.get(numero_id=nf_e),
+                    codigo = item["cProd"],
+                    descricao = item["xProd"],
+                    unidade = item["uCom"],
+                    quantidade = item["qCom"],
+                    preco_unitario = item['vUnCom'],
+                    valot_total = item['xProd'],
+                    entrada = "N"
+                )
+                dados_item.save()
                 # Aqui você pode fazer o que for necessário com os dados
                 print("Produto:", item)
                 #print("Descrição:", xProd)
@@ -375,7 +387,7 @@ def processar_xml(xml_file):
             #messages.warning(request,"NF-e já importada!")
     except ET.ParseError as e:
         print("Erro ao analisar o XML:", e)
-    return itens 
+    
 
 
 @login_required    

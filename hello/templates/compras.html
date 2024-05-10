@@ -105,30 +105,30 @@
     <thead class="table-primary">
       <tr>
         <th>
-          Código <br>
-          <button class="btn btn-sort" data-field="produto">▲▼</button>
-        </th>
-        <th>
-          Número <br>
+          Número 
           <button class="btn btn-sort" data-field="tipo">▲▼</button>
         </th>
         <th>
-          Emissão <br>
+          Emissão 
           <button class="btn btn-sort" data-field="fornecedor">▲▼</button>
         </th>
         <th>
-          Fornecedor <br>
+          Fornecedor 
           <button class="btn btn-sort" data-field="quantidade">▲▼</button>
+        </th>
+        <th>
+          Ações 
+          <button class="btn btn-sort" data-field="produto">▲▼</button>
         </th>
       </tr>
     </thead>
       <tbody>
         {% for compra in compras %}
           <tr>
-            <td>{{ compra.numero_id }}</td>
             <td>{{ compra.numero }}</td>
             <td>{{ compra.data_emissao }}</td>
             <td>{{ compra.fornecedor }}</td>
+            <td> <a href="{% url 'dashboard'%}" class="btn btn-primary btn-sm">Detalhes</a> </td>
           </tr>
         {% endfor %}
       </tbody>
