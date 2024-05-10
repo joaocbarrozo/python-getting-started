@@ -98,6 +98,7 @@
     <table class="table table-hover table-striped table-bordered ">
       <thead class="table-primary">
         <tr>
+            <th>CNPJ</th>
             <th>Nome</th>
             <th>Telefone</th>
             <th>E-mail</th>
@@ -107,6 +108,7 @@
         <tbody>
           {% for fornecedor in fornecedores %}
             <tr>
+              <td>{{ fornecedor.cnpj }}</td>
               <td>{{ fornecedor.nome }}</td>
               <td>{{ fornecedor.fone }}</td>
               <td>{{ fornecedor.email }}</td>

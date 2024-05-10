@@ -241,17 +241,14 @@ def itensImportados_view(request):
             xml_file = request.FILES['xml_file']
             print('Arquivo recebido!')
             # Processar o arquivo XML e salvar os dados no banco de dados
-            processar_xml(xml_file)
-            if itens.__len__() < 1:
-                messages.error(request, "NF-e já foi importada")
-            else:
-                messages.success(request, str(itens.__len__()) + " itens importados")
+            msg = processar_xml(xml_file)
+            messages.info(request, msg)
         print(formXML.is_valid())
     else:
         formXML = UploadXMLForm()
     formEntrada = EntradasForm()
     formProduto = ProdutoForm()
-    itens = ItemNF.objects.all().order_by("data_importacao")
+
     context = {
         'itens': itens, 'formXML': formXML, 'formEntradas': formEntrada, 'formProduto': formProduto
     }
@@ -275,8 +272,6 @@ def processar_xml(xml_file):
     # Analisar o conteúdo XML
     try:
         tree = ET.fromstring(xml_content)
-        itens = [] #Lista para armazenar os itens
-        fornecedor = {}
         nf_e = {}
         
         # Encontrar o elemento infNFe 
@@ -285,7 +280,7 @@ def processar_xml(xml_file):
         # Extrair o valor do atributo Id
         if infNFe is not None:
             nfe_id = infNFe.attrib.get('Id')
-            nf_e = nfe_id[3:]
+            nf_e = nfe_id[3:]#Retirando os 3 primeiros caracteres (NFe)
             print("ID da NF-e:", nf_e)
         else:
             print("Elemento infNFe não encontrado.")
@@ -371,19 +366,13 @@ def processar_xml(xml_file):
                     valot_total = item['xProd'],
                     entrada = "N"
                 )
+                #Salvando item no banco de dados
                 dados_item.save()
-                # Aqui você pode fazer o que for necessário com os dados
                 print("Produto:", item)
-                #print("Descrição:", xProd)
-                #print("Unidade:", uCom)
-                #print("Quantidade:", qCom)
-                #print("Valor Unitário:", vUnCom)
-                #print("Valor Total:", vProd)
                 print("--------------------")
-                # Por exemplo, você pode salvar essas informações no banco de dados
-                # Produto.objects.create(nome=cProd, descricao=xProd)
+                return  str(item.__len__) + " itens importados"
         else:
-            print("NF-e já importada")
+            return "NF-e já importada"
             #messages.warning(request,"NF-e já importada!")
     except ET.ParseError as e:
         print("Erro ao analisar o XML:", e)
