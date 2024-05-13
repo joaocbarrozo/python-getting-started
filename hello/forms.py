@@ -1,5 +1,5 @@
 from django import forms
-from .models import Fornecedor, Produto, Pedido, ProdutoPedido, Entrada, Saida
+from .models import Compra, Fornecedor, Produto, Pedido, ProdutoPedido, Entrada, Saida
 
 class ProdutoForm(forms.ModelForm):
     class Meta:
@@ -18,13 +18,14 @@ class ProdutoForm(forms.ModelForm):
 class EntradasForm(forms.ModelForm):
     class Meta:
         model = Entrada
-        fields = ['produto', 'tipo', 'fornecedor', 'quantidade', 'preco_unitario']
+        fields = ['produto', 'tipo', 'item_nfe_id']
         widgets = {
             'produto': forms.Select(attrs={'class': 'form-control'}),
             'tipo': forms.Select(attrs={'class': 'form-control'}),
-            'fornecedor': forms.Select(attrs={'class': 'form-control'}),
-            'quantidade': forms.NumberInput(attrs={'class': 'form-control'}),
-            'preco_unitario': forms.NumberInput(attrs={'class': 'form-control'}),
+            'item_nfe_id' : forms.Select(attrs={'class': 'form-control'})
+            #'fornecedor': forms.Select(attrs={'class': 'form-control'}),
+            #'quantidade': forms.NumberInput(attrs={'class': 'form-control'}),
+            #'preco_unitario': forms.NumberInput(attrs={'class': 'form-control'}),
             #'usuario': forms.Select(attrs={'class': 'form-control'}),
         }
         
@@ -95,3 +96,16 @@ from django import forms
 
 class UploadXMLForm(forms.Form):
     xml_file = forms.FileField(widget=forms.ClearableFileInput(attrs={'onchange': 'updateFileName(this)'}))
+
+class CompraForm(forms.ModelForm):
+    class Meta:
+        model = Compra
+        fields = ['numero_id', 'numero', 'data_emissao', 'fornecedor', 'status']
+        widgets = {
+            'numero_id': forms.TextInput(attrs={'class': 'form-control'}),
+            'numero' : forms.TextInput(attrs={'class': 'form-control'}),
+            'data_emissao': forms.TextInput(attrs={'class': 'form-control'}),
+            'fornecedor' : forms.TextInput(attrs={'class': 'form-control'}),
+            
+            'status' : forms.TextInput(attrs={'class': 'form-control'})
+        }

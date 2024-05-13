@@ -128,7 +128,9 @@
             <td>{{ compra.numero }}</td>
             <td>{{ compra.data_emissao }}</td>
             <td>{{ compra.fornecedor }}</td>
-            <td> <a href="{% url 'dashboard'%}" class="btn btn-primary btn-sm">Detalhes</a> </td>
+            <td> 
+              <a href="{% url 'detalhes_compra' compra_id=compra.id %}" class="btn btn-primary btn-sm">Detalhes</a>  
+            </td>
           </tr>
         {% endfor %}
       </tbody>

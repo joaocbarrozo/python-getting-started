@@ -6,7 +6,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import FiltroDataForm, FornecedorForm, ProdutoForm, PedidoForm, ProdutoPedidoForm, EntradasForm, SaidasForm, UploadXMLForm
+from .forms import CompraForm, FiltroDataForm, FornecedorForm, ProdutoForm, PedidoForm, ProdutoPedidoForm, EntradasForm, SaidasForm, UploadXMLForm
 from django.db.models import Q
 from datetime import datetime
 from django.db.models import Sum, F, Q, Subquery, OuterRef, ExpressionWrapper, FloatField
@@ -199,7 +199,7 @@ def add_entrada_view(request):
 def compras_view(request):#Exibe notas fiscais importadas e ou cadastradas
     compras = Compra.objects.all().order_by("data_emissao")
     if request.method == 'POST':
-        form = UploadXMLForm(request.POST, request.FILES)
+        form = CompraForm(request.POST)
         if form.is_valid():
             xml_file = request.FILES['xml_file']
             print('Arquivo recebido!')
@@ -208,7 +208,7 @@ def compras_view(request):#Exibe notas fiscais importadas e ou cadastradas
             return redirect('produtos')
         print(form.is_valid())
     else:
-        form = UploadXMLForm()
+        form = CompraForm()
         
 
         # Filtra entradas
@@ -233,8 +233,16 @@ def compras_view(request):#Exibe notas fiscais importadas e ou cadastradas
     return render(request, 'compras.html', {'compras': compras, 'form':form})
 
 @login_required
+def detalhes_compra_view(request, compra_id):
+    compra = get_object_or_404(Compra, id=compra_id)
+    itens_nfe = ItemNF.objects.filter(nfe_id=compra_id)
+
+    return render(request, 'detalhes_compra.html', {'compra': compra, 'itens_nfe': itens_nfe})
+
+
+@login_required
 def itensImportados_view(request):
-    itens = ItemNF.objects.all().order_by("data_importacao")
+    itens = ItemNF.objects.filter(status="N").order_by("data_importacao")
     if request.method == 'POST':
         formXML = UploadXMLForm(request.POST, request.FILES)
         if formXML.is_valid():
@@ -363,14 +371,15 @@ def processar_xml(xml_file):
                     unidade = item["uCom"],
                     quantidade = item["qCom"],
                     preco_unitario = item['vUnCom'],
-                    valot_total = item['xProd'],
-                    entrada = "N"
+                    valor_total = item['xProd'],
+                    status = "N"
                 )
                 #Salvando item no banco de dados
                 dados_item.save()
                 print("Produto:", item)
                 print("--------------------")
-                return  str(item.__len__) + " itens importados"
+            print(det.__len__())
+            return  str(item.__len__()) + " itens importados"
         else:
             return "NF-e já importada"
             #messages.warning(request,"NF-e já importada!")

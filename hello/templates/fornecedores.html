@@ -108,7 +108,7 @@
         <tbody>
           {% for fornecedor in fornecedores %}
             <tr>
-              <td>{{ fornecedor.cnpj }}</td>
+              <td>{{ fornecedor.cnpj|slice:"0:2" }}.{{ fornecedor.cnpj|slice:"2:5" }}.{{ fornecedor.cnpj|slice:"5:8" }}/{{ fornecedor.cnpj|slice:"8:12" }}-{{ fornecedor.cnpj|slice:"12:" }}</td>
               <td>{{ fornecedor.nome }}</td>
               <td>{{ fornecedor.fone }}</td>
               <td>{{ fornecedor.email }}</td>

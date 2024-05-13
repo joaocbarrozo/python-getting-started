@@ -129,9 +129,9 @@
           <tr>
             <td>{{ entrada.produto }}</td>
             <td>{{ entrada.tipo }}</td>
-            <td>{{ entrada.fornecedor }}</td>
-            <td>{{ entrada.quantidade }}</td>
-            <td>{{ entrada.preco_unitario }}</td>
+            <td>{{ entrada.item_nfe_id.nfe_id.fornecedor }}</td>
+            <td>{{ entrada.item_nfe_id.quantidade }}</td>
+            <td>{{ entrada.item_nfe_id.preco_unitario }}</td>
             <td>{{ entrada.criado_em|date:"d/m/Y" }}</td>
           </tr>
         {% endfor %}

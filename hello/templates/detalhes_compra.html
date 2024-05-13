@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+
+<h1>Detalhes da Compra</h1>
+
+<form method="post" action="#">
+    {% csrf_token %}
+    <div class="row ">
+        <div class="mb-3 col-6">
+            <label for="id" class="form-label">Fornecedor:</label>
+            <input type="text" id="id" class="form-control" value="{{ compra.fornecedor.razao_social }}" readonly>
+        </div>
+        <div class="mb-3 col-6">
+            <label for="status" class="form-label ">Número:</label>
+            <input type="text" id="status" class="form-control" value="{{ compra.numero }}" readonly>
+        </div>
+    </div>
+    <div class="row">
+        <div class="mb-3 col-6">
+            <label for="fornecedor" class="form-label">Cod. Identificador:</label>
+            <input type="text" id="fornecedor" class="form-control" value="{{ compra.numero_id }}" readonly>
+        </div>
+        <div class="mb-3 col-6">
+            <label for="criado_em" class="form-label">Emissão:</label>
+            <input type="text" id="criado_em" class="form-control" value="{{ compra.data_emissao}}" readonly>
+        </div>
+    </div>
+</form>
+
+<h2>Itens da NF-e</h2>
+<div class="table-responsive">
+    <table class="table table-hover table-striped table-bordered">
+        <thead class="table-primary">
+            <tr>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Preço Unit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in itens_nfe %}
+            <tr>
+                <td>{{ item.descricao }}</td>
+                <td>{{ item.quantidade }}</td>
+                <td>{{ item.preco_unitario }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Nenhum produto encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Botão para imprimir a compra -->
+<button type="button" class="btn btn-secondary remover_print" onclick="imprimirPedido()">Imprimir</button>
+
+
+<!-- Código JavaScript/jQuery -->
+<script>
+    // Função para imprimir o pedido
+    function imprimirPedido() {
+       window.print(); // Aciona a função de impressão do navegador
+    }
+</script>
+
+{% endblock %}

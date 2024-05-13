@@ -43,27 +43,6 @@ class Fornecedor(models.Model):
     def __str__(self):
         return self.nome
 
-class Entrada(models.Model):
-    TIPO = (
-        ('C', 'COMPRA'),
-        ('D', 'DOAÇÃO')
-    )
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    tipo = models.CharField(max_length=16, choices=TIPO)
-    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
-    quantidade = models.PositiveIntegerField()
-    preco_unitario = models.DecimalField(max_digits=6, decimal_places=2)
-    criado_em = models.DateTimeField(auto_now_add=True)
-    #usuario = models.ForeignKey(User.username, on_delete=models.CASCADE)
- 
-    def __str__(self):
-        return self.produto.nome
-        
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)   
-        self.produto.quantidade += self.quantidade
-        self.produto.save()
-
 class Saida(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     setor = models.ForeignKey(Setor, on_delete=models.CASCADE)
@@ -98,8 +77,6 @@ class ProdutoPedido(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveBigIntegerField()
 
-
-
 class Compra(models.Model):#Dados extraidos via XML dos dados das NF-es
     STATUS = (
         ('E', 'Entregue'),
@@ -125,12 +102,35 @@ class ItemNF(models.Model):#Dados extraidos via XML
     unidade = models.CharField(max_length=8)
     quantidade = models.CharField(max_length=32)
     preco_unitario = models.CharField(max_length=32)
-    valot_total = models.CharField(max_length=32)
-    entrada = models.CharField(max_length=2)
+    valor_total = models.CharField(max_length=32)
+    status = models.CharField(max_length=2, default="N")#Campo para registra se a entrada do item foi realizada S ou N
     data_importacao = models.DateTimeField(auto_now=True)
+    validade = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.descricao
 
-
+class Entrada(models.Model):
+    TIPO = (
+        ('C', 'COMPRA'),
+        ('D', 'DOAÇÃO')
+    )
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=16, choices=TIPO)
+    #fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
+    #quantidade = models.PositiveIntegerField()
+    #preco_unitario = models.DecimalField(max_digits=6, decimal_places=2)
+    item_nfe_id = models.ForeignKey(ItemNF, on_delete=models.CASCADE)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    #usuario = models.ForeignKey(User.username, on_delete=models.CASCADE)
+ 
+    def __str__(self):
+        return self.produto.nome
+        
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)   
+        self.produto.quantidade += float(self.item_nfe_id.quantidade)
+        self.produto.save()
+        self.item_nfe_id.status = "S"
+        self.item_nfe_id.save()
 # Create your models here.

@@ -24,7 +24,10 @@
           document.querySelector('.alert').remove();
       }, 3000); // 3000 milissegundos = 3 segundos
   </script>
+
   {% endif %}
+
+
 
   <!-- Modal para adicionar uma entrada -->
   <div class="modal fade" id="addEntradaModal" tabindex="-1" aria-labelledby="addEntradaModalLabel" aria-hidden="true">
@@ -69,6 +72,21 @@
         </div>
       </div>
     </div>
+        <!-- Script para aplicar autocapitalize -->
+        <script>
+          // Obtém o formulário do modal
+          const modalFormulario = document.querySelector('#addProductModal form');
+        
+          // Obtém todos os campos de texto do formulário
+          const camposTexto = modalFormulario.querySelectorAll('input[type="text"], textarea');
+        
+          // Adiciona evento de escuta para o evento de digitação em cada campo
+          camposTexto.forEach(function(campo) {
+            campo.addEventListener('input', function() {
+              this.value = this.value.toUpperCase();
+            });
+          });
+        </script>
 
   <div class="table-responsive">
     <table class="table table-hover table-striped table-bordered ">
@@ -92,10 +110,11 @@
             <td>{{ item.unidade }}</td>
             <td>{{ item.quantidade }}</td>
             <td>{{ item.preco_unitario }}</td>
-            <td>{{ item.valot_total }}</td>
+            <td>{{ item.valor_total }}</td>
             <td>{{ item.data_impoprtacao }}</td>
             <td><button type="button" class="btn-add btn btn-primary btn-sm mb-1">Add</button>
-              <button type="button" class="btn-criar btn btn-primary btn-sm mb-1">Criar</button></td>
+              <button type="button" class="btn-criar btn btn-primary btn-sm mb-1">Criar</button>
+            </td>
           </tr>
         {% endfor %}
       </tbody>
