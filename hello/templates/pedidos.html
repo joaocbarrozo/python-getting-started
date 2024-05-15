@@ -130,7 +130,7 @@
             <td>{{ pedido.criado_em|date:"d/m/Y" }}</td>
             <td>
               <a href="{% url 'detalhes_pedido' pedido_id=pedido.id %}" class="btn btn-primary btn-sm">Detalhes</a>
-              <a href="{% url 'editar_pedido' pedido_id=pedido.id %}" class="btn btn-primary btn-sm">Editar</a>
+              <a href="{% url 'editar_pedido' pedido_id=pedido.id %}" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt"></i></a>
             </td>
           </tr>
         {% endfor %}

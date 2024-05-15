@@ -5,3 +5,6 @@ td, thead {
 #formFiltro {
   display: none;
 }
+a {
+  display: inline;
+}
