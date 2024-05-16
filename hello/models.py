@@ -100,9 +100,9 @@ class ItemNF(models.Model):#Dados extraidos via XML
     codigo = models.CharField(max_length=64)#Codigo que consta no xml
     descricao = models.CharField(max_length=255)
     unidade = models.CharField(max_length=8)
-    quantidade = models.CharField(max_length=32)
-    preco_unitario = models.CharField(max_length=32)
-    valor_total = models.CharField(max_length=32)
+    quantidade = models.CharField(max_length=64)
+    preco_unitario = models.CharField(max_length=64)
+    valor_total = models.CharField(max_length=64)
     status = models.CharField(max_length=2, default="N")#Campo para registra se a entrada do item foi realizada S ou N
     data_importacao = models.DateTimeField(auto_now=True)
     validade = models.DateField(blank=True, null=True)
