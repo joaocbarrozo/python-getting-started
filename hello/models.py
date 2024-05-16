@@ -63,9 +63,9 @@ class Saida(models.Model):
      
 class Pedido(models.Model):
     STATUS = (
-        ('Aberto', 'aberto'),
-        ('Realizado', 'realizado'),
-        ('Cancelado', 'cancelado')
+        ('SOLICITADO', 'SOLICITADO'),
+        ('RECEBIDO', 'RECEBIDO'),
+        ('CANCELADO', 'CANCELADO')
     )
     produtos = models.ManyToManyField(Produto, through="ProdutoPedido")
     criado_em = models.DateTimeField(auto_now_add=True)
@@ -104,7 +104,7 @@ class ItemNF(models.Model):#Dados extraidos via XML
     preco_unitario = models.CharField(max_length=64)
     valor_total = models.CharField(max_length=64)
     status = models.CharField(max_length=2, default="N")#Campo para registra se a entrada do item foi realizada S ou N
-    data_importacao = models.DateTimeField(auto_now=True)
+    data_importacao = models.DateTimeField(auto_now_add=True)
     validade = models.DateField(blank=True, null=True)
 
     def __str__(self):

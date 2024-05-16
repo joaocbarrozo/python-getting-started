@@ -5,6 +5,30 @@ td, thead {
 #formFiltro {
   display: none;
 }
-a {
+a, .btn-add, .btn-criar {
   display: inline;
+}
+
+/* Estilo para o corpo da página */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Isso faz com que o corpo da página tenha pelo menos a altura da tela inteira */
+  margin: 0;
+}
+
+/* Estilo para o conteúdo principal */
+main {
+  flex: 1; /* Isso faz com que o main ocupe todo o espaço restante verticalmente */
+  overflow-y: auto; /* Isso habilita a barra de rolagem vertical quando necessário */
+}
+
+/* Estilo para o cabeçalho */
+header {
+  flex: 0 0 auto; /* Isso fixa o cabeçalho na parte superior */
+}
+
+/* Estilo para o rodapé */
+footer {
+  flex: 0 0 auto; /* Isso fixa o rodapé na parte inferior */
 }

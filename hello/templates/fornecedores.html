@@ -100,6 +100,7 @@
         <tr>
             <th>CNPJ</th>
             <th>Nome</th>
+            <th>Contato</th>
             <th>Telefone</th>
             <th>E-mail</th>
             <th>Ações</th>
@@ -110,16 +111,17 @@
             <tr>
               <td>{{ fornecedor.cnpj|slice:"0:2" }}.{{ fornecedor.cnpj|slice:"2:5" }}.{{ fornecedor.cnpj|slice:"5:8" }}/{{ fornecedor.cnpj|slice:"8:12" }}-{{ fornecedor.cnpj|slice:"12:" }}</td>
               <td>{{ fornecedor.nome }}</td>
+              <td>{{ fornecedor.contato }}</td>
               <td>{{ fornecedor.fone }}</td>
               <td>{{ fornecedor.email }}</td>
               <td class="remover_print">
-                <a href="{% url 'editar_fornecedor' fornecedor_id=fornecedor.id %}" class="btn btn-primary btn-sm">Editar</a>
+                <a href="{% url 'editar_fornecedor' fornecedor_id=fornecedor.id %}" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt"></i></a>
                 <form method="post"
                     action="{% url 'remover_fornecedor' fornecedor_id=fornecedor.id %}"
                     class="d-inline">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger btn-sm remover-produto-button"
-                            data-fornecedor-id="{{ fornecedor.id }}">Remover</button>
+                            data-fornecedor-id="{{ fornecedor.id }}"><i class="far fa-trash-alt"></i></button>
                     </form>
               </td>
             </td>
