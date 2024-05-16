@@ -97,7 +97,7 @@ class Compra(models.Model):#Dados extraidos via XML dos dados das NF-es
 
 class ItemNF(models.Model):#Dados extraidos via XML
     nfe_id = models.ForeignKey(Compra, on_delete=models.CASCADE)
-    codigo = models.CharField(max_length=32)#Codigo que consta no xml
+    codigo = models.CharField(max_length=64)#Codigo que consta no xml
     descricao = models.CharField(max_length=255)
     unidade = models.CharField(max_length=8)
     quantidade = models.CharField(max_length=32)
