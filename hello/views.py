@@ -352,10 +352,12 @@ def processar_xml(xml_file):
             recebida_em = "", 
             status = 'E'
             )
-            dados_nfe.save()  
+            dados_nfe.save()
+            contagem_itens = 0  
             # Iterar sobre cada elemento 'det' para extrair as informações dos itens
             for det in tree.findall('.//{http://www.portalfiscal.inf.br/nfe}det'):
                 # Extrair as informações de cada item
+                contagem_itens += 1
                 item = {
                 "cProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}cProd').text,
                 "xProd" : det.find('.//{http://www.portalfiscal.inf.br/nfe}xProd').text,
@@ -380,8 +382,8 @@ def processar_xml(xml_file):
                 dados_item.save()
                 print("Produto:", item)
                 print("--------------------")
-            print(det.__len__())
-            return  str(item.__len__()) + " itens importados"
+            print(contagem_itens)
+            return  str(contagem_itens) + " itens importados"
         else:
             return "NF-e já importada"
             #messages.warning(request,"NF-e já importada!")
