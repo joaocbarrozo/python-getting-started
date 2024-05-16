@@ -364,6 +364,8 @@ def processar_xml(xml_file):
                 "vUnCom" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vUnCom').text)),
                 "vProd" : "{:.2f}".format(float(det.find('.//{http://www.portalfiscal.inf.br/nfe}vProd').text))
                 }
+                print(item)
+                print("---------------")
                 dados_item = ItemNF.objects.create(
                     nfe_id = Compra.objects.get(numero_id=nf_e),
                     codigo = item["cProd"],
