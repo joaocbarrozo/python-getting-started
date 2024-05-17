@@ -112,8 +112,8 @@
             <td>{{ item.preco_unitario }}</td>
             <td>{{ item.valor_total }}</td>
             <td>{{ item.data_importacao }}</td>
-            <td><button type="button" class="btn-add btn btn-primary btn-sm mb-1"><i class="fas fa-plus"></i></button>
-              <button type="button" class="btn-criar btn btn-primary btn-sm mb-1"><i class="fas fa-pencil-alt"></i></button>              
+            <td><button type="button" class="btn-add btn btn-primary btn-sm mb-1" title="Entrada" data-nfe="{{ item.id }}"><i class="fas fa-plus"></i></button>
+              <button type="button" class="btn-criar btn btn-primary btn-sm mb-1" title="Criar produto"><i class="fas fa-pencil-alt"></i></button>              
             </td>
           </tr>
         {% endfor %}
@@ -121,25 +121,18 @@
     </table>
   </div>
 
-  <script>
-    // Função para imprimir o pedido
-    function imprimir() {
-       window.print(); // Aciona a função de impressão do navegador
-    }
-  </script>
   <!-- JavaScript para preencher o formulário com os dados do produto -->
 <script>
   $(document).ready(function(){
     $('.btn-add').click(function(){
       // Obter os dados do produto da linha da tabela
+      var itemNFeId = $(this).data('id');
       var row = $(this).closest('tr');
       var quantity = row.find('td:eq(3)').text(); // Índice 3 é a coluna de quantidade
       var unitPrice = row.find('td:eq(4)').text(); // Índice 4 é a coluna de preço unitário
       
-      // Preencher o formulário do modal com os dados do produto
-      $('#id_quantidade').val(quantity);
-      $('#id_preco_unitario').val(unitPrice);
-      
+      // Preencher o formulário do modal c
+      $('#id_item_nfe_id').val(itemNFeId);
       // Mostrar o modal
       $('#addEntradaModal').modal('show');
     });
@@ -157,6 +150,7 @@
       // Preencher o formulário do modal com os dados do produto
      
       $('#id_descricao').val(descricao);
+      
       
       // Mostrar o modal
       $('#addProdutoModal').modal('show');

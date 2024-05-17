@@ -1,5 +1,6 @@
 from django import forms
-from .models import Compra, Fornecedor, Produto, Pedido, ProdutoPedido, Entrada, Saida
+from .models import Compra, Fornecedor, ItemNF, Produto, Pedido, ProdutoPedido, Entrada, Saida
+from django.db.models import Q
 
 class ProdutoForm(forms.ModelForm):
     class Meta:
@@ -28,6 +29,20 @@ class EntradasForm(forms.ModelForm):
             #'preco_unitario': forms.NumberInput(attrs={'class': 'form-control'}),
             #'usuario': forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        queryset = self.fields['item_nfe_id'].queryset
+
+        # Filter by items with status = "N"
+        filter_condition = Q(status="N")
+        ordering = ['descricao']  # Order by the 'descricao' field (replace with your desired field)
+
+        # Apply the filter to the queryset (if present or create a new one)
+        if queryset is not None:
+            self.fields['item_nfe_id'].queryset = queryset.filter(filter_condition).order_by(*ordering)
+        else:
+            self.fields['item_nfe_id'].queryset = ItemNF.objects.filter(filter_condition).order_by(*ordering)
         
 class SaidasForm(forms.ModelForm):
     class Meta:

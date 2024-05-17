@@ -183,11 +183,11 @@ def add_entrada_view(request):
         if form.is_valid():          
             form.save()
             messages.success(request, 'Entrada salva com sucesso!')
-            return redirect('produtos')
+            return redirect('itens_importados')
         else:
             form = EntradasForm()        
             # Redirecione para outra página ou retorne uma resposta de sucesso
-            return redirect('produtos')
+            return redirect('itens_importados')
     else:
         produto_id = request.GET.get('produto_id')
         user_id = request.GET.get('user_id')
