@@ -19,46 +19,71 @@ function imprimir() {
   }, 5000); // 5000 milissegundos = 5 segundos
 
 
-//Função para exibir o nome do documento carregado na tela entradas
-function updateFileName(input) {
-    var fileNameElement = document.getElementById('fileName');
-    if (input.files.length > 0) {
-        fileNameElement.textContent = 'Arquivo selecionado: ' + input.files[0].name;
-    } else {
-        fileNameElement.textContent = '';
-    }
-}
-
-//Função de tabela dinamica
-$(document).ready(function() {
-  $('.table').DataTable({
-      "language": {
-          "sEmptyTable": "Nenhum registro encontrado",
-          "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-          "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
-          "sInfoFiltered": "(Filtrados de _MAX_ registros)",
-          "sInfoPostFix": "",
-          "sInfoThousands": ".",
-          "sLengthMenu": "Mostrar _MENU_ resultados por página",
-          "sLoadingRecords": "Carregando...",
-          "sProcessing": "Processando...",
-          "sZeroRecords": "Nenhum registro encontrado",
-          "sSearch": "Pesquisar",
-          "oPaginate": {
-              "sNext": "Próximo",
-              "sPrevious": "Anterior",
-              "sFirst": "Primeiro",
-              "sLast": "Último"
-          },
+  $(document).ready(function() {
+    $('.table').DataTable({
+      layout: {
+          top: 'buttons',
+          topStart: {
+              buttons: [
+                  {
+                      extend: 'searchBuilder',
+                      config: {
+                          depthLimit: 2,
+                          conditions: {
+                              'date': {
+                                  '==': 'Igual a',
+                                  '!=': 'Diferente de',
+                                  '<': 'Menor que',
+                                  '<=': 'Menor ou igual a',
+                                  '>': 'Maior que',
+                                  '>=': 'Maior ou igual a',
+                                  'between': 'Entre',
+                                  'notBetween': 'Não entre',
+                                  'empty': 'Vazio',
+                                  'notEmpty': 'Não vazio'
+                              }
+                          }
+                      },
+                      text: 'Condicionais'
+                  },
+                  {
+                      extend: 'searchPanes',
+                      config: {
+                          cascadePanes: true,
+                          layout: 'columns-4'
+                      },
+                      text: 'Filtros'
+                  },
+                  {
+                      extend: 'colvis',
+                      text: 'Colunas'
+                  }
+              ],
+          }
       },
-      "colReorder": true, // Ativar reordenação de colunas
-     
-      "colVis": {
-          "buttonText": 'Selecionar colunas',
-          "overlayFade": 0,
-          "exclude": [0] // Colunas que não podem ser escondidas
-      }
+      buttons: true,
+      lengthChange: true,
+      responsive: true,
+        "language": {
+            "sEmptyTable": "Nenhum registro encontrado",
+            "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+            "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sInfoThousands": ".",
+            "sLengthMenu": "Mostrar _MENU_ resultados por página",
+            "sLoadingRecords": "Carregando...",
+            "sProcessing": "Processando...",
+            "sZeroRecords": "Nenhum registro encontrado",
+            "sSearch": "Pesquisar",
+            "oPaginate": {
+                "sNext": "Próximo",
+                "sPrevious": "Anterior",
+                "sFirst": "Primeiro",
+                "sLast": "Último"
+            },
+        },
+        "colReorder": true, // Ativar reordenação de colunas
+    });
   });
-});
-
-
+  
