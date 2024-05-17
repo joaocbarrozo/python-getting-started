@@ -375,7 +375,7 @@ def processar_xml(xml_file):
                     unidade = item["uCom"],
                     quantidade = item["qCom"],
                     preco_unitario = item['vUnCom'],
-                    valor_total = item['xProd'],
+                    valor_total = item['vProd'],
                     status = "N"
                 )
                 #Salvando item no banco de dados
@@ -390,8 +390,6 @@ def processar_xml(xml_file):
     except ET.ParseError as e:
         print("Erro ao analisar o XML:", e)
     
-
-
 @login_required    
 def saidas_view(request):
     saidas = Saida.objects.all().order_by("produto__nome")

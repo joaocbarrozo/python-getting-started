@@ -118,9 +118,9 @@
             <td>{{ produto.estoque_minimo }}</td>
             <td>{{ produto.quantidade }}</td>
             <td>
-              <a href="{% url 'add_entrada' %}?produto_id={{ produto.id }}&user_id={{ request.user.id }}" class="btn btn-primary btn-sm">+</a>
-              <a href="{% url 'add_saida' %}?produto_id={{ produto.id }}&user_id={{ request.user.id }}" class="btn btn-primary btn-sm">-</a>
-              <a href="{% url 'editar_produto' produto_id=produto.id %}" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt"></i></a>
+              <a href="{% url 'add_entrada' %}?produto_id={{ produto.id }}&user_id={{ request.user.id }}" class="btn btn-primary btn-sm" title="Entrada"><i class="fas fa-plus"></i></a>
+              <a href="{% url 'add_saida' %}?produto_id={{ produto.id }}&user_id={{ request.user.id }}" class="btn btn-primary btn-sm" title="Saída"><i class="fas fa-minus"></i></a>
+              <a href="{% url 'editar_produto' produto_id=produto.id %}" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt" title="Editar"></i></a>
             </td>
           </tr>
         {% endfor %}

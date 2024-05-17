@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h1>Detalhes do Pedido</h1>
+<h1 class="remover_print">Detalhes do Pedido</h1>
 
 <form method="post" action="#">
     {% csrf_token %}
@@ -52,7 +52,7 @@
                         class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger btn-sm remover-produto-button"
-                            data-produto-id="{{ produto.id }}" data-pedido-id="{{ pedido.id }}">Remover</button>
+                            data-produto-id="{{ produto.id }}" data-pedido-id="{{ pedido.id }}" title="Excluir"><i class="far fa-trash-alt"></i></button>
                     </form>
                 </td>
             </tr>

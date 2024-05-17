@@ -125,7 +125,7 @@
             <td>{{ compra.data_emissao }}</td>
             <td>{{ compra.fornecedor }}</td>
             <td> 
-              <a href="{% url 'detalhes_compra' compra_id=compra.id %}" class="btn btn-primary btn-sm">Detalhes</a>  
+              <a href="{% url 'detalhes_compra' compra_id=compra.id %}" class="btn btn-primary btn-sm" title="Ver detalhes"><i class="fas fa-eye"></i></a>  
             </td>
           </tr>
         {% endfor %}

@@ -97,12 +97,12 @@ class Compra(models.Model):#Dados extraidos via XML dos dados das NF-es
 
 class ItemNF(models.Model):#Dados extraidos via XML
     nfe_id = models.ForeignKey(Compra, on_delete=models.CASCADE)
-    codigo = models.CharField(max_length=64)#Codigo que consta no xml
+    codigo = models.CharField(max_length=32)#Codigo que consta no xml
     descricao = models.CharField(max_length=255)
     unidade = models.CharField(max_length=8)
-    quantidade = models.CharField(max_length=64)
-    preco_unitario = models.CharField(max_length=64)
-    valor_total = models.CharField(max_length=64)
+    quantidade = models.CharField(max_length=32)
+    preco_unitario = models.CharField(max_length=32)
+    valor_total = models.CharField(max_length=32)
     status = models.CharField(max_length=2, default="N")#Campo para registra se a entrada do item foi realizada S ou N
     data_importacao = models.DateTimeField(auto_now_add=True)
     validade = models.DateField(blank=True, null=True)

@@ -1,10 +1,10 @@
 //Função para esconder e exibir filtro
 function esconderFiltro() {
     var formFiltro = document.getElementById("formFiltro");
-    if (formFiltro.style.display === "none") {
-      formFiltro.style.display = "block";
-    } else {
+    if (formFiltro.style.display === "block") {
       formFiltro.style.display = "none";
+    } else {
+      formFiltro.style.display = "block";
     }
   }
 
@@ -12,6 +12,12 @@ function esconderFiltro() {
 function imprimir() {
      window.print(); // Aciona a função de impressão do navegador
   }
+
+  //Script para remover a notificação após 5 segundos
+  setTimeout(function() {
+      document.querySelector('.alert').remove();
+  }, 5000); // 5000 milissegundos = 5 segundos
+
 
 //Função para exibir o nome do documento carregado na tela entradas
 function updateFileName(input) {
@@ -22,8 +28,8 @@ function updateFileName(input) {
         fileNameElement.textContent = '';
     }
 }
-//Função de tabela dinamica
 
+//Função de tabela dinamica
 $(document).ready(function() {
   $('.table').DataTable({
       "language": {
@@ -44,17 +50,6 @@ $(document).ready(function() {
               "sFirst": "Primeiro",
               "sLast": "Último"
           },
-          "oAria": {
-              "sSortAscending": ": Ordenar colunas de forma ascendente",
-              "sSortDescending": ": Ordenar colunas de forma descendente"
-          },
-          "select": {
-              "rows": {
-                  "_": "Selecionado %d linhas",
-                  "0": "Nenhuma linha selecionada",
-                  "1": "Selecionado 1 linha"
-              }
-          }
       },
       "colReorder": true, // Ativar reordenação de colunas
      
