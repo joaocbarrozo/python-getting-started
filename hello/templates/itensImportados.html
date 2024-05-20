@@ -19,15 +19,8 @@
         {% endfor %}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-    <script> //Script para remover a notificação após 3 segundos
-      setTimeout(function() {
-          document.querySelector('.alert').remove();
-      }, 3000); // 3000 milissegundos = 3 segundos
-  </script>
 
   {% endif %}
-
-
 
   <!-- Modal para adicionar uma entrada -->
   <div class="modal fade" id="addEntradaModal" tabindex="-1" aria-labelledby="addEntradaModalLabel" aria-hidden="true">
@@ -75,7 +68,7 @@
         <!-- Script para aplicar autocapitalize -->
         <script>
           // Obtém o formulário do modal
-          const modalFormulario = document.querySelector('#addProductModal form');
+          const modalFormulario = document.querySelector('#addProdutoModal form');
         
           // Obtém todos os campos de texto do formulário
           const camposTexto = modalFormulario.querySelectorAll('input[type="text"], textarea');
@@ -111,7 +104,7 @@
             <td>{{ item.quantidade }}</td>
             <td>{{ item.preco_unitario }}</td>
             <td>{{ item.valor_total }}</td>
-            <td>{{ item.data_importacao }}</td>
+            <td>{{ item.data_importacao|date:"d/m/Y" }}</td>
             <td><button type="button" class="btn-add btn btn-primary btn-sm mb-1" title="Entrada" data-nfe="{{ item.id }}"><i class="fas fa-plus"></i></button>
               <button type="button" class="btn-criar btn btn-primary btn-sm mb-1" title="Criar produto"><i class="fas fa-pencil-alt"></i></button>              
             </td>
@@ -123,20 +116,24 @@
 
   <!-- JavaScript para preencher o formulário com os dados do produto -->
 <script>
-  $(document).ready(function(){
+$(document).ready(function(){
     $('.btn-add').click(function(){
-      // Obter os dados do produto da linha da tabela
-      var itemNFeId = $(this).data('id');
-      var row = $(this).closest('tr');
-      var quantity = row.find('td:eq(3)').text(); // Índice 3 é a coluna de quantidade
-      var unitPrice = row.find('td:eq(4)').text(); // Índice 4 é a coluna de preço unitário
-      
-      // Preencher o formulário do modal c
-      $('#id_item_nfe_id').val(itemNFeId);
-      // Mostrar o modal
-      $('#addEntradaModal').modal('show');
+        // Obter os dados do produto da linha da tabela
+        var itemNFeId = $(this).data('nfe'); // ID do item da NF-e
+        var row = $(this).closest('tr');
+        var quantity = row.find('td:eq(3)').text(); // Índice 3 é a coluna de quantidade
+        var unitPrice = row.find('td:eq(4)').text(); // Índice 4 é a coluna de preço unitário
+        
+        // Preencher o formulário do modal
+        $('#id_item_nfe_id').val(itemNFeId); // Define o valor do campo item_nfe_id
+        
+        // Selecionar a opção correspondente ao item da NF-e
+        $('#id_item_nfe_id option[value="' + itemNFeId + '"]').prop('selected', true);
+        
+        // Mostrar o modal
+        $('#addEntradaModal').modal('show');
     });
-  });
+});
   </script>
 
 <script>

@@ -122,7 +122,7 @@
         {% for compra in compras %}
           <tr>
             <td>{{ compra.numero }}</td>
-            <td>{{ compra.data_emissao }}</td>
+            <td>{{ compra.data_emissao|date:"d/m/Y" }}</td>
             <td>{{ compra.fornecedor }}</td>
             <td> 
               <a href="{% url 'detalhes_compra' compra_id=compra.id %}" class="btn btn-primary btn-sm" title="Ver detalhes"><i class="fas fa-eye"></i></a>  
@@ -133,44 +133,6 @@
     </table>
   </div>
   <br>
-
-  <script> 
-  // Função para ordenar a tabela com base na coluna clicada
-    $(document).ready(function() {
-      // Função para ordenar a tabela com base na coluna clicada
-      function sortTable(column, order) {
-        var rows = $('#entrada-table tbody tr').get();
-    
-        rows.sort(function(a, b) {
-          var keyA = $(a).find('td:eq(' + column + ')').text();
-          var keyB = $(b).find('td:eq(' + column + ')').text();
-    
-          if (order === 'asc') {
-            return keyA.localeCompare(keyB);
-          } else {
-            return keyB.localeCompare(keyA);
-          }
-        });
-    
-        $.each(rows, function(index, row) {
-          $('#entrada-table tbody').append(row);
-        });
-      }
-    
-      // Manipula o clique nos botões de ordenação
-      $('.btn-sort').click(function() {
-        var column = $(this).data('field');
-        var order = $(this).hasClass('sorted-asc') ? 'desc' : 'asc';
-    
-        // Remove a classe de ordenação dos outros botões e atualiza o botão atual
-        $('.btn-sort').removeClass('sorted-asc sorted-desc');
-        $(this).addClass('sorted-' + order);
-    
-        // Chama a função de ordenação
-        sortTable($(this).closest('th').index(), order);
-      });
-    });
-  </script>
   
 {% endblock %}
 
