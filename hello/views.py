@@ -101,6 +101,7 @@ def dashboard_view(request):
 
 @login_required    
 def produtos_view(request):
+    produtos = Produto.objects.all().order_by("nome")   
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
         if form.is_valid():
@@ -108,20 +109,7 @@ def produtos_view(request):
             messages.success(request, 'Produto salvo com sucesso!')
             return redirect('produtos')
     else:
-        form = ProdutoForm()
-    
-        produtos = Produto.objects.all().order_by("nome")
-        #Filtra os produtos por nome, categoria e local
-        nome = request.GET.get('nome')
-        categoria = request.GET.get('categoria')
-        local = request.GET.get('local')
-            
-        if nome:
-            produtos = produtos.filter(nome__icontains=nome)
-        if categoria:
-            produtos = produtos.filter(categoria__categoriaNome__icontains=categoria)
-        if local:
-            produtos = produtos.filter(local__localNome__icontains=local)        
+        form = ProdutoForm()  
     
     return render(request, 'produtos.html', {'produtos': produtos, 'form': form })
 
@@ -150,28 +138,6 @@ def entradas_view(request):
         print(form.is_valid())
     else:
         form = UploadXMLForm()
-        
-
-        # Filtra entradas
-        produto = request.GET.get('produto')
-        tipo = request.GET.get('tipo')
-        fornecedor = request.GET.get('fornecedor')
-        data_inicial = request.GET.get('data_inicial')
-        data_final = request.GET.get('data_final')
-
-        if data_inicial:
-            data_inicial = datetime.strptime(data_inicial, '%Y-%m-%d').date()
-        if data_final:
-            data_final = datetime.strptime(data_final, '%Y-%m-%d').date()
-
-        if produto:
-            entradas = entradas.filter(Q(produto__nome__icontains=produto))
-        if tipo:
-            entradas = entradas.filter(Q(tipo__icontains=tipo))
-        if fornecedor:
-            entradas = entradas.filter(Q(fornecedor__nome__icontains=fornecedor))
-        if data_inicial and data_final:
-            entradas = entradas.filter(criado_em__range=[data_inicial, data_final])
         
     return render(request, 'entradas.html', {'entradas': entradas, 'form':form})
 
@@ -209,26 +175,6 @@ def compras_view(request):#Exibe notas fiscais importadas e ou cadastradas
         print(form.is_valid())
     else:
         form = CompraForm()
-        
-
-        # Filtra entradas
-        numero = request.GET.get('numero')
-        fornecedor = request.GET.get('fornecedor')
-        
-        data_inicial = request.GET.get('data_inicial')
-        data_final = request.GET.get('data_final')
-
-        if data_inicial:
-            data_inicial = datetime.strptime(data_inicial, '%Y-%m-%d').date()
-        if data_final:
-            data_final = datetime.strptime(data_final, '%Y-%m-%d').date()
-
-        if numero:
-            compras = compras.filter(Q(produto__nome__icontains=numero))
-        if fornecedor:
-            compras = compras.filter(Q(fornecedor__nome__icontains=fornecedor))
-        if data_inicial and data_final:
-            compras = compras.filter(criado_em__range=[data_inicial, data_final])
         
     return render(request, 'compras.html', {'compras': compras, 'form':form})
 
@@ -393,23 +339,7 @@ def processar_xml(xml_file):
 @login_required    
 def saidas_view(request):
     saidas = Saida.objects.all().order_by("produto__nome")
-    # Filtra saidas 
-    produto = request.GET.get('produto')
-    setor = request.GET.get('setor')
-    data_inicial = request.GET.get('data_inicial')
-    data_final = request.GET.get('data_final')
 
-    if data_inicial:
-        data_inicial = datetime.strptime(data_inicial, '%Y-%m-%d').date()
-    if data_final:
-        data_final = datetime.strptime(data_final, '%Y-%m-%d').date()
-
-    if produto:
-        saidas = saidas.filter(Q(produto__nome__icontains=produto))
-    if setor:
-        saidas = saidas.filter(Q(setor__setorNome__icontains=setor))
-    if data_inicial and data_final:
-        saidas = saidas.filter(criado_em__range=[data_inicial, data_final])
     return render(request, 'saidas.html', {'saidas': saidas})
 
 @login_required
@@ -439,6 +369,7 @@ def add_saida_view(request):
 
 @login_required    
 def pedidos_view(request):
+    pedidos = Pedido.objects.all().order_by("-criado_em") 
     if request.method == 'POST':
         form = PedidoForm(request.POST)
         if form.is_valid():
@@ -447,27 +378,7 @@ def pedidos_view(request):
             return redirect('pedidos')
     else:
         form = PedidoForm()
-    
-        pedidos = Pedido.objects.all().order_by("-criado_em")
-        #Filtra os produtos por nome, categoria e local
-        id = request.GET.get('id')
-        fornecedor = request.GET.get('fornecedor')
-        status = request.GET.get('status')
-        data_inicial = request.GET.get('data_inicial')
-        data_final = request.GET.get('data_final')
-
-        if data_inicial:
-            data_inicial = datetime.strptime(data_inicial, '%Y-%m-%d').date()
-        if data_final:
-            data_final = datetime.strptime(data_final, '%Y-%m-%d').date()
-        
-        if id:
-            pedidos = pedidos.filter(id__icontains=id)
-        if fornecedor:
-            pedidos = pedidos.filter(fornecedor__nome__icontains=fornecedor)
-        if status:
-            pedidos = pedidos.filter(status__icontains=status)        
-        
+     
     return render(request, 'pedidos.html', {'pedidos': pedidos, 'form': form})
 
 @login_required
@@ -601,6 +512,5 @@ def remover_fornecedor_view(request, fornecedor_id):
         return redirect('fornecedores')
     
     return redirect('fornecedores')
-
 
 # Create your views here.

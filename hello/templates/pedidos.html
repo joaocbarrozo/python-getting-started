@@ -11,55 +11,7 @@
         <button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#addPedidoModal">
           Novo Pedido
         </button>
-        <!-- Botão para exibir/esconder filtros -->
-        <button type="button" class="btn btn-primary mt-1" id="botaoFiltros" onClick="esconderFiltro()">
-          Filtros
-        </button>
       </div>
-      <div class="col-9 text-dark p-3">
-        <!-- Filtro -->
-        <form class="form-control" id="formFiltro">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">  
-                <label for="id" class="form-label">Número:</label>
-                <input type="text" name="id" class="form-control">
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">    
-                <label for="fornecedor" class="form-label">Fornecedor:</label>
-                <input type="text" name="fornecedor" class="form-control">
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group"> 
-                <label for="status" class="form-label">Status:</label>
-                <input type="select" name="status" class="form-control">
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="data_inicial" class="form-label">Data Inicial:</label>
-                <input type="date" name="data_inicial" class="form-control">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="data_final" class="form-label">Data Final:</label>
-                <input type="date" name="data_final" class="form-control">
-              </div>
-            </div>
-          </div>
-
-          <button class="btn btn-primary btn-sm mt-1 " type="submit">Filtrar</button>
-        </form>
-      </div>
-    </div>
-  </div>
 
   <!-- Modal para adicionar um produto -->
   <div class="modal fade" id="addPedidoModal" tabindex="-1" aria-labelledby="addPedidoModalLabel" aria-hidden="true">
