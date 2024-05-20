@@ -418,7 +418,7 @@ def editar_produto_view(request, produto_id):
 @login_required
 def detalhes_pedido_view(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
-    produtos_pedidos = ProdutoPedido.objects.filter(pedido=pedido)
+    produtos_pedidos = ProdutoPedido.objects.filter(pedido=pedido).order_by('produto__nome')
 
     if request.method == 'POST':
         form = ProdutoPedidoForm(request.POST)

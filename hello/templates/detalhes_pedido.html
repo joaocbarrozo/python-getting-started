@@ -119,6 +119,14 @@
     function imprimirPedido() {
        window.print(); // Aciona a função de impressão do navegador
     }
+
+    $(document).ready(function () {
+        // Verifica se a tabela está inicializada como DataTables
+        if ($.fn.DataTable.isDataTable('.table')) {
+            // Destroi a instância DataTables
+            $('.table').DataTable().destroy();
+        }
+    });
 </script>
 
 {% endblock %}
